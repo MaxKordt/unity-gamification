@@ -52,8 +52,8 @@ public class PaperCard
         ID = System.Guid.NewGuid().ToString();
         Title = "";
         gameObject = new GameObject();
-        Year = "";
-        Month = "";
+        Year = "0";
+        Month = "0";
         NumberOfBeingReferenced = 0;
         Level = 0;
         Mean_ValueOPV = 0;

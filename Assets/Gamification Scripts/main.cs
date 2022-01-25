@@ -13,8 +13,6 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
     public Service_Hud serviceHud;
     public Subservice_CardFactory subserviceCardFactory;
 
-    public GameObject button_Fleet_addToDeck;
-
     public bool importWasClicked;
     
 
@@ -34,7 +32,7 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
     void Update()
     {
         
-        if(importWasClicked == true) //not actual syntax
+        if (importWasClicked) //not actual syntax
         {
             Service_ImportExport serviceImportExport = new Service_ImportExport();//parameters are not nessecary. just so that every Logic modul can use all the Managers and repos. For quicker implementation. 
             List<PaperCard> paperCards = serviceImportExport.Import();
@@ -47,21 +45,9 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
     }
 
 
-    private void ButtonImport_Click() {
+    public void ButtonImport_Click() {
 
-        IEnumerator ShowLoadDialogCoroutine() {
-
-            yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, null, "load bib file", "load");
-
-            Debug.Log(FileBrowser.Success);
-            if (FileBrowser.Success) {
-
-                Debug.Log(FileBrowserHelpers.GetFilename(FileBrowser.Result[0]));
-                
-            }
-        }
-
-        StartCoroutine(ShowLoadDialogCoroutine());
+        importWasClicked = true;
     }
 
     void helpFunktion2()

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Hud
 {
-    public string id;
-    public string name;
-    public Dictionary<string,HudField> hudfields;
+    public string ID;
+    public string Name;
+    public Dictionary<string,HudField> Hudfields;
 
     //the Gameobject this scipt is asigned to
     public GameObject canvas; //might change the class
 
     public Hud(string name, GameObject canvas)
     {
-        this.id = System.Guid.NewGuid().ToString();
-        this.name = name;
+        this.ID = System.Guid.NewGuid().ToString();
+        this.Name = name;
         this.canvas = canvas;
 
     }

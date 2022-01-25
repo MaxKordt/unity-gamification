@@ -24,7 +24,9 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
             //find Reference to Grid GameObject and sets its values here by values in hud
            // Component child=GetComponentInChildren(Grid g); //something like this. "Grid g" might not be the right type.
             //if hud.name.Equals(child.name) //child.name is not the right syntax for getting the name of value which should be modified. 
-         }
+
+            
+        }
         
     }
     
