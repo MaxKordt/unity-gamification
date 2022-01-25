@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SimpleFileBrowser;
 //using UnityEngine.InputSystem;
 
 //public scene Variables
@@ -36,7 +37,7 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
         if(importWasClicked == true) //not actual syntax
         {
             Service_ImportExport serviceImportExport = new Service_ImportExport();//parameters are not nessecary. just so that every Logic modul can use all the Managers and repos. For quicker implementation. 
-            List<PaperCard> paperCards = serviceImportExport.import();
+            List<PaperCard> paperCards = serviceImportExport.Import();
             foreach(PaperCard paperCard in paperCards)
             {
                 repo.save(paperCard);
@@ -46,9 +47,21 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
     }
 
 
-    void toogleButtonImport()
-    {
-        
+    private void ButtonImport_Click() {
+
+        IEnumerator ShowLoadDialogCoroutine() {
+
+            yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, null, "load bib file", "load");
+
+            Debug.Log(FileBrowser.Success);
+            if (FileBrowser.Success) {
+
+                Debug.Log(FileBrowserHelpers.GetFilename(FileBrowser.Result[0]));
+                
+            }
+        }
+
+        StartCoroutine(ShowLoadDialogCoroutine());
     }
 
     void helpFunktion2()

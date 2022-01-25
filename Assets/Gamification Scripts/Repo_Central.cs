@@ -64,8 +64,8 @@ public class Repo_Central
     //save
     public void save(PaperCard paperCard) //Only use in main Script. Or old versions of objs will be used at some point
     {
-        idPapercardLookup.Add(paperCard.id,paperCard);
-        idObjectLookup.Add(paperCard.id, (object)paperCard);
+        idPapercardLookup.Add(paperCard.ID,paperCard);
+        idObjectLookup.Add(paperCard.ID, (object)paperCard);
     }
 
     public void save(TagPlanet tagPlanet) //Only use in main Script. Or old versions of objs will be used at some point
