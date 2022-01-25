@@ -10,11 +10,12 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
 
     public Repo_Central repo;
     public Service_Hud serviceHud;
-    public Service_ImportExport serviceImportExport;
     public Subservice_CardFactory subserviceCardFactory;
 
-  
-  
+    public GameObject button_Fleet_addToDeck;
+
+    public bool importWasClicked;
+    
 
     //vars
     //public InputActionReference inputActionReference; für mausklicks. Aber nicht ob das newInputsystem notwendig ist. 
@@ -25,27 +26,29 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
     // Start is called before the first frame update
     void Start()
     {
-        
+        importWasClicked = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // if(ImportButton == true) //not actual syntax
-        // {
-        serviceImportExport = new Service_ImportExport();//parameters are not nessecary. just so that every Logic modul can use all the Managers and repos. For quicker implementation. 
-            List<PaperCard> paperCards = serviceImportExport.import();
-        foreach(PaperCard paperCard in paperCards)
+        
+        if(importWasClicked == true) //not actual syntax
         {
-            repo.save(paperCard);
+            Service_ImportExport serviceImportExport = new Service_ImportExport();//parameters are not nessecary. just so that every Logic modul can use all the Managers and repos. For quicker implementation. 
+            List<PaperCard> paperCards = serviceImportExport.import();
+            foreach(PaperCard paperCard in paperCards)
+            {
+                repo.save(paperCard);
+            }
+            importWasClicked = false;
         }
-      //  }
     }
 
 
-    void helpFunktion1()
+    void toogleButtonImport()
     {
-
+        
     }
 
     void helpFunktion2()

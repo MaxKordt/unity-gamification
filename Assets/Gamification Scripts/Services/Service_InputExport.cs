@@ -16,7 +16,7 @@ public class Service_ImportExport : MonoBehaviour
     public List<PaperCard> import()
     {
         List <PaperCard> paperCards = new List<PaperCard>();
-
+        //importlogic
         //cardFactory creates PaperCard from String
         paperCards.Add(subservice_CardFactory.create("String from import"));
 

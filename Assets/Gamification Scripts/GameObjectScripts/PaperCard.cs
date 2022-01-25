@@ -16,7 +16,7 @@ public class PaperCard
     public int      attack;
     public int      defense;
     public string   effect;
-    //public Texture textur;
+   
 
     public GameObject gameObject; //Visual Card Ship
 
