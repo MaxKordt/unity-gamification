@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class TagPlanet
 {
-    public string id;
-    public string name;
-    public List<PaperCard> taggedPaperCards;
+    public string ID { get; set; }
+    public string Name { get; set; }
+    public List<PaperCard> TaggedPaperCards { get; set; }
+    public bool IsFavorite { get; set; }
+    public string TexttureName { get; set; }
 
     public TagPlanet(string name)
     {
-        this.id = System.Guid.NewGuid().ToString();
-        this.name = name;
-        this.taggedPaperCards = new List<PaperCard>();
+        ID = System.Guid.NewGuid().ToString();
+        Name = name;
+        TaggedPaperCards = new List<PaperCard>();
+        IsFavorite = false;
+        TexttureName = "";
+    }
+
+    public TagPlanet() {
+
+        ID = System.Guid.NewGuid().ToString();
+        Name = "";
+        TaggedPaperCards = new List<PaperCard>();
+        IsFavorite = false;
+        TexttureName = "";
     }
 
 }

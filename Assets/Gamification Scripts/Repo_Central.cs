@@ -70,8 +70,8 @@ public class Repo_Central : MonoBehaviour
 
     public void Save(TagPlanet tagPlanet) //Only use in main Script. Or old versions of objs will be used at some point
     {
-        IdTagPlanetLookup.Add(tagPlanet.id,tagPlanet);
-        IdObjectLookup.Add(tagPlanet.id, (object)tagPlanet);
+        IdTagPlanetLookup.Add(tagPlanet.ID,tagPlanet);
+        IdObjectLookup.Add(tagPlanet.ID, (object)tagPlanet);
     }
 
     public void Save(Hud hud) //Only use in main Script. Or old versions of objs will be used at some point

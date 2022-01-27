@@ -21,6 +21,7 @@ public class PaperCard
     public List<string> Authors { get; set; }
     public int NumberOfPages { get; set; }  //init as unreasonable page number -1. later check against it to see if pages could be exported from bibtext or not
     public bool AddedToCollection { get; set; }
+    public List<TagPlanet> TagList { get; set; }
 
     public GameObject GameObject { get; set; } //Visual Card Ship
 
@@ -40,6 +41,7 @@ public class PaperCard
         Authors = new List<string>();
         NumberOfPages = -1;
         AddedToCollection = false;
+        TagList = new List<TagPlanet>();
 
         //this.Level = helpfunktion1(publishedDate, references);           //implements the mapping to obje good paper att to card vars
         //this.LvarageOfOPV = helpfunktion2(publishedDate, references);           //implements the mapping to obje good paper att to card vars
@@ -65,6 +67,7 @@ public class PaperCard
         Authors = new List<string>();
         NumberOfPages = -1;
         AddedToCollection = false;
+        TagList = new List<string>();
     }
 
     private void Calc_Level() {

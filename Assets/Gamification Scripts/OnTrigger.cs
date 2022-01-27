@@ -48,14 +48,16 @@ public class OnTrigger : MonoBehaviour  //only showing / rendering top level ima
     }
     private void ToggleVisibility(bool enabled) {
 
-        //Transform transform = gameObject.transform;
-        Transform[] transforms = gameObject.GetComponentsInChildren<Transform>(true);    //get ALL transforms in hierarchie. not only on the next level --> no recursive function needed!!!
-        foreach (Transform child in transforms) {
+        Transform transform = gameObject.transform;
+        transform.GetComponent<CanvasGroup>().alpha = enabled ? 1.0f : 0.0f;    //alpha works better but has huge overhead. need to use empty gameobjects and only bringe them to life, when they come close to hud
+        //Transform[] transforms = gameObject.GetComponentsInChildren<Transform>(true);    //get ALL transforms in hierarchie. not only on the next level --> no recursive function needed!!!
+        //foreach (Transform child in transforms) {
 
-            UnityEngine.UI.Text text0 = child.GetComponent<UnityEngine.UI.Text>();
-            if (text0 != null) text0.enabled = enabled;
-            UnityEngine.UI.Image image0 = child.GetComponent<UnityEngine.UI.Image>();
-            if (image0 != null) image0.enabled = enabled;
-        }
+        //    UnityEngine.UI.Text text0 = child.GetComponent<UnityEngine.UI.Text>();
+        //    if (text0 != null) text0.enabled = enabled;
+        //    UnityEngine.UI.Image image0 = child.GetComponent<UnityEngine.UI.Image>();
+        //    if (image0 != null) image0.enabled = enabled;
+            
+        //}
     }
 }
