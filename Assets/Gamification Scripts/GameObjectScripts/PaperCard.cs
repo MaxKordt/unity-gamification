@@ -67,7 +67,7 @@ public class PaperCard
         Authors = new List<string>();
         NumberOfPages = -1;
         AddedToCollection = false;
-        TagList = new List<string>();
+        TagList = new List<TagPlanet>();
     }
 
     private void Calc_Level() {
