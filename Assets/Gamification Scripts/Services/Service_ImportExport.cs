@@ -19,7 +19,19 @@ public class Service_ImportExport : MonoBehaviour
     public List<PaperCard> Import()
     {
         List <PaperCard> paperCards = new List<PaperCard>();
+
+        IEnumerator ShowLoadDialogCoroutine() {
+
+            yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, null, "load bib file", "load");
+
+            Debug.Log(FileBrowser.Success);
+            if (FileBrowser.Success) {
+
+                _filenames = FileBrowser.Result;
+            }
+        }
         //open simple file dialog
+        //throws null reference exception. dont know why...
         StartCoroutine(ShowLoadDialogCoroutine());
 
   //      @article{adam2015precision,
@@ -103,7 +115,7 @@ public class Service_ImportExport : MonoBehaviour
                                 UnityEngine.UI.Text effectText = texts[1];
                                 effectText.text = "Best advertisement slots in the galaxy! Cheapest ofer in this parsec and will increase your revenue by 70%. Guaranteed! Just contact Consul Bragkha on Nekoris IV for more detailed information.";
 
-                                paperCard.gameObject = gameObject;
+                                paperCard.GameObject = gameObject;
                                 paperCards.Add(paperCard);   //if not first entry save paper to list and create new entity
                             }
                             paperCard = new PaperCard();
@@ -209,7 +221,7 @@ public class Service_ImportExport : MonoBehaviour
 
                     if (paperCard != null) {    //to get last paper 
 
-                        paperCard.gameObject = gameObject;
+                        paperCard.GameObject = gameObject;
                         paperCards.Add(paperCard);
                     }
                 }
@@ -220,17 +232,6 @@ public class Service_ImportExport : MonoBehaviour
         //paperCards.Add(subservice_CardFactory.create("String from import"));
 
         return paperCards;
-    }
-
-    IEnumerator ShowLoadDialogCoroutine() {
-
-        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, null, "load bib file", "load");
-
-        Debug.Log(FileBrowser.Success);
-        if (FileBrowser.Success) {
-
-            _filenames = FileBrowser.Result;
-        }
     }
 
     public bool Export(List<PaperCard> paperCards)

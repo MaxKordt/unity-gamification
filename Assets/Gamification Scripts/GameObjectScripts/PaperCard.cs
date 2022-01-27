@@ -20,14 +20,14 @@ public class PaperCard
     public string CiteKey { get; set; }
     public List<string> Authors { get; set; }
     public int NumberOfPages { get; set; }  //init as unreasonable page number -1. later check against it to see if pages could be exported from bibtext or not
+    public bool AddedToCollection { get; set; }
 
-
-    public GameObject gameObject { get; set; } //Visual Card Ship
+    public GameObject GameObject { get; set; } //Visual Card Ship
 
     public PaperCard(string title, string month, string year, int times_Referenced){ //add all paper Attributes here
         ID = System.Guid.NewGuid().ToString();
         Title = title;
-        gameObject = new GameObject();
+        GameObject = null;
         Year = year;
         Month = month;
         NumberOfBeingReferenced = times_Referenced;
@@ -39,6 +39,7 @@ public class PaperCard
         CiteKey = "";
         Authors = new List<string>();
         NumberOfPages = -1;
+        AddedToCollection = false;
 
         //this.Level = helpfunktion1(publishedDate, references);           //implements the mapping to obje good paper att to card vars
         //this.LvarageOfOPV = helpfunktion2(publishedDate, references);           //implements the mapping to obje good paper att to card vars
@@ -51,7 +52,7 @@ public class PaperCard
 
         ID = System.Guid.NewGuid().ToString();
         Title = "";
-        gameObject = new GameObject();
+        GameObject = null;
         Year = "0";
         Month = "0";
         NumberOfBeingReferenced = 0;
@@ -63,6 +64,7 @@ public class PaperCard
         CiteKey = "";
         Authors = new List<string>();
         NumberOfPages = -1;
+        AddedToCollection = false;
     }
 
     private void Calc_Level() {
@@ -96,28 +98,28 @@ public class PaperCard
     }
 
 
-//    private string helpfunktion5(string publishedDate, string references)
-//    {
-//        throw new NotImplementedException();
-//    }
+    //    private string helpfunktion5(string publishedDate, string references)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-//    private int helpfunktion4(string publishedDate, string references)
-//    {
-//        throw new NotImplementedException();
-//    }
+    //    private int helpfunktion4(string publishedDate, string references)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-//    private int helpfunktion3(string publishedDate, string references)
-//    {
-//        throw new NotImplementedException();
-//    }
+    //    private int helpfunktion3(string publishedDate, string references)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-//    private int helpfunktion2(string publishedDate, string references)
-//    {
-//        throw new NotImplementedException();
-//    }
+    //    private int helpfunktion2(string publishedDate, string references)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-//    private int helpfunktion1(string publishedDate, string references)
-//    {
-//        throw new NotImplementedException();
-//    }
+    //    private int helpfunktion1(string publishedDate, string references)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 }

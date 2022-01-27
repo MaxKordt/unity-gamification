@@ -4,6 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
+  - _hud_collection: {fileID: 4932295468893865899, guid: c83685ef1324eb44da9ec8f8a2d4b96b, type: 3}
   - gameObject: {fileID: 8609839065016045175, guid: 6f187502e75af294f9c3f888a4ca79c0, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
