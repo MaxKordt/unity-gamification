@@ -124,6 +124,8 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                     //create variables for card valules
                     //call cardbuilder and use buildnewpapercard
 
+                    int showing = _gameMaster.GetComponent<main>()._showInitCardCount;
+
                     foreach (string filename in filenames) {
 
                         using (System.IO.StreamReader file = new System.IO.StreamReader(filename)) {  //get contents of bib file line by line
@@ -200,8 +202,17 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                     }
                                     paperCard = new PaperCard();
                                     paperCard.GameObject = Instantiate(_cardPrefab);
-                                    paperCard.GameObject.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
+                                    //paperCard.GameObject.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
                                     Transform transformGameObjectCopy = paperCard.GameObject.transform;
+
+                                    if (showing <= 0) {
+
+                                        paperCard.GameObject.SetActive(false);
+                                        paperCard.GameObject.GetComponent<BoxCollider>().enabled = false;
+                                        paperCard.GameObject.GetComponent<OnTrigger>().enabled = false;
+                                    }
+                                    showing--;
+                                    Debug.Log(showing);
                                     transformGameObjectCopy.SetParent(grid, false);
                                     //transformGameObjectCopy.position = new Vector3(grid.position.x, grid.position.y, 0);
                                     transformGameObjectCopy.localScale = new Vector3(1, 1, 1);

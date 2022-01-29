@@ -16,7 +16,10 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
     public GameObject _cardPrefab;
     public Canvas _hud_Collection;
     public bool importWasClicked;
-
+    public Canvas _main_Canvas;
+    public Camera _main_Camera;
+    public int _cardCollectionCardCounter = 0;
+    public int _showInitCardCount = 10;
 
 
     private Service_Hud service_Hud;
