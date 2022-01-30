@@ -9,6 +9,7 @@ public class TagPlanet
     public List<PaperCard> TaggedPaperCards { get; set; }
     public bool IsFavorite { get; set; }
     public string TexttureName { get; set; }
+    public GameObject GameObject { get; set; }
 
     public TagPlanet(string name)
     {
@@ -17,6 +18,7 @@ public class TagPlanet
         TaggedPaperCards = new List<PaperCard>();
         IsFavorite = false;
         TexttureName = "";
+        GameObject = null;
     }
 
     public TagPlanet() {
@@ -26,6 +28,7 @@ public class TagPlanet
         TaggedPaperCards = new List<PaperCard>();
         IsFavorite = false;
         TexttureName = "";
+        GameObject = null;
     }
 
 }

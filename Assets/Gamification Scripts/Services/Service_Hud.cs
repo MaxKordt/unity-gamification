@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UI = UnityEngine.UI;
 
 
 
@@ -45,13 +45,43 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
         //   // Component child=GetComponentInChildren(Grid g); //something like this. "Grid g" might not be the right type.
         //    //if hud.name.Equals(child.name) //child.name is not the right syntax for getting the name of value which should be modified. 
 
-            
+
         //}
+
     }
     
     public void Refresh_Huds() {
 
         //Hud -- Others
+        List<TagPlanet> tags = repo.GetAllTagPlanets();
+        Transform hc_bg_border = _hud_Tags.transform.GetChild(0);
+        Transform hc_bg_header = hc_bg_border.GetChild(0);
+        Transform panel = hc_bg_header.GetChild(1);
+        Transform grid = panel.GetChild(0);
+        List<Transform> transforms = new List<Transform>();
+
+        //for (int i = 0; i < grid.childCount; i++) transforms.Add(grid.GetChild(i));
+
+        foreach (TagPlanet tagPlanet in tags) {
+
+            //if (!tagPlanet.GameObject.activeInHierarchy) {
+
+            //    Instantiate(tagPlanet.GameObject);
+            //    tagPlanet.GameObject.transform.SetParent(grid, false);
+            //}
+            
+            //bool notFound = true;
+            //foreach (Transform transform in transforms) {
+
+            //    if (transform.name == tagPlanet.Name) {
+
+            //        notFound = false;
+            //        break;
+            //    }
+            //}
+
+            //if (notFound) Instantiate(tagPlanet.GameObject);
+        }
     }
 
     public void Button_ToggleHudCollection_Click() {
@@ -75,21 +105,64 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
                 UnityEngine.UI.InputField inputField = transform.GetComponent<UnityEngine.UI.InputField>();
                 Debug.Log(inputField.text);
+                CardBuilder cardBuilder = new CardBuilder();
+                TagPlanet newTag = cardBuilder.BuildTagPlanet(inputField.text, new List<PaperCard>(), false, "", null);
+                //GameObject newTag_GameObject = newTag.GameObject;
+                newTag.GameObject = Instantiate(_cardPrefab);
+
+                Transform card_interior = newTag.GameObject.transform.GetChild(0);
+                Transform title = card_interior.GetChild(0);
+                UI.Text titleText = title.GetComponent<UI.Text>();
+                titleText.text = newTag.Name;
+
+                Transform borders0 = card_interior.GetChild(1);
+                Transform placeholderShipImage = borders0.GetChild(0);
+                Transform border0 = placeholderShipImage.GetChild(0);
+                Transform level = border0.GetChild(0);
+                Transform levelTEXT = level.GetChild(0);
+                UI.Text levelText = levelTEXT.GetComponent<UI.Text>();
+                levelText.text = "*";// isFavorite ? "*" : "";
+
+                Transform borders1 = card_interior.GetChild(2);
+                Transform bg0 = borders1.GetChild(0);
+                Transform sText = bg0.GetChild(0);
+                UI.Text shipText = sText.GetComponent<UI.Text>();
+                shipText.text = "";// paperCard.CiteKey + " - " + paperCard.Year + paperCard.Month;
+
+                Transform border1 = bg0.GetChild(1);
+                border1.GetComponent<CanvasGroup>().alpha = 0;
+                //Transform bg1 = border1.GetChild(0);
+                //Transform adt = bg1.GetChild(0);
+                //UnityEngine.UI.Text atkDefText = adt.GetComponent<UnityEngine.UI.Text>();
+                //atkDefText.text = paperCard.Attack + " / " + paperCard.Defense;
+
+                Transform bgeffects = card_interior.GetChild(3);
+                Transform textCrew = bgeffects.GetChild(0);
+                UI.Text crewText = textCrew.GetComponent<UI.Text>();
+                crewText.text = "";
+
+                Transform textEffect = bgeffects.GetChild(1);
+                UI.Text effectText = textEffect.GetComponent<UI.Text>();
+                effectText.text = "Best advertisement slots in the galaxy! Cheapest ofer in this parsec and will increase your revenue by 70%. Guaranteed! Just contact Consul Bragkha on Nekoris IV for more detailed information.";
+                newTag.GameObject.transform.localPosition = new Vector3(0, 0, 0);
+                newTag.GameObject.transform.localScale = new Vector3(1, 1, 1);
+                newTag.GameObject.name = newTag.ID;
+
+                Transform hc_bg_border = _hud_Tags.transform.GetChild(0);
+                Transform hc_bg_header = hc_bg_border.GetChild(0);
+                Transform panel = hc_bg_header.GetChild(1);
+                Transform grid = panel.GetChild(0);
+
+                newTag.GameObject.transform.SetParent(grid, false);
+                repo.Save(newTag);
+
                 inputField.text = "";
-                //Transform[] children = transform.GetComponentsInChildren<Transform>(true);
-                //foreach (Transform child in children) {
-
-                //    if (child.name == "Text") {
-
-                //        UnityEngine.UI.Text text = child.GetComponent<UnityEngine.UI.Text>();
-                //        text.text = "Hallo";
-                //        Debug.Log(text.text);
-                //    }
-                //}
 
                 break;
             }
         }
+
+        Refresh_Huds();
     }
 
     public void Button_Import_Click() {
@@ -120,6 +193,7 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                     Transform hc_bg_header = hc_bg_border.GetChild(0);
                     Transform panel = hc_bg_header.GetChild(1);
                     Transform grid = panel.GetChild(0);
+                    //Transform recycleGrid = grid.GetChild(0);
 
                     //create variables for card valules
                     //call cardbuilder and use buildnewpapercard
@@ -186,7 +260,7 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                         Transform bgeffects = card_interior.GetChild(3);
                                         Transform textCrew = bgeffects.GetChild(0);
                                         UnityEngine.UI.Text crewText = textCrew.GetComponent<UnityEngine.UI.Text>();
-                                        string authors = "Crew of";
+                                        string authors = "Crew of ";
                                         foreach (string author in paperCard.Authors) {
 
                                             authors += author + ", ";
@@ -209,18 +283,19 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
                                         paperCard.GameObject.SetActive(false);
                                         paperCard.GameObject.GetComponent<BoxCollider>().enabled = false;
-                                        paperCard.GameObject.GetComponent<OnTrigger>().enabled = false;
+                                        //paperCard.GameObject.GetComponent<OnTrigger>().enabled = false;
                                     }
                                     showing--;
-                                    Debug.Log(showing);
+                                    //Debug.Log(showing);
                                     transformGameObjectCopy.SetParent(grid, false);
+                                    //transformGameObjectCopy.SetParent(recycleGrid, false);
                                     //transformGameObjectCopy.position = new Vector3(grid.position.x, grid.position.y, 0);
                                     transformGameObjectCopy.localScale = new Vector3(1, 1, 1);
                                     transformGameObjectCopy.localPosition = new Vector3(0, 0, 0);
                                     string[] split = line.Split(new char[] { '{' });
                                     //string type = split[0].Remove(0, 1);
                                     paperCard.CiteKey = split[1].Remove(split[1].Length - 1, 1);
-                                    paperCard.GameObject.name = paperCard.CiteKey;
+                                    paperCard.GameObject.name = paperCard.ID;
                                 }
                                 else { //line contains values
                                        //posible keywords/fields taken from https://www.bibtex.com/format/fields/

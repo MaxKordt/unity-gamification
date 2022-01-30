@@ -1337,7 +1337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8609839065016045172, guid: 6f187502e75af294f9c3f888a4ca79c0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1500
+      value: -2000
       objectReference: {fileID: 0}
     - target: {fileID: 8609839065016045172, guid: 6f187502e75af294f9c3f888a4ca79c0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1383,7 +1383,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2093957825699917255, guid: 6f187502e75af294f9c3f888a4ca79c0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6f187502e75af294f9c3f888a4ca79c0, type: 3}
 --- !u!224 &856556686 stripped
 RectTransform:
@@ -2736,8 +2737,8 @@ MonoBehaviour:
   _cardPrefab: {fileID: 1728425457}
   _hud_Collection: {fileID: 1178592013}
   importWasClicked: 0
-  _main_Canvas: {fileID: 0}
-  _main_Camera: {fileID: 0}
+  _main_Canvas: {fileID: 1220489662}
+  _main_Camera: {fileID: 963194227}
   _cardCollectionCardCounter: 0
   _showInitCardCount: 10
 --- !u!114 &1237897475

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UI = UnityEngine.UI;
 
 public class CardBuilder {
 
@@ -117,7 +118,8 @@ public class CardBuilder {
         string name,
         List<PaperCard> paperCards,
         bool isFavorite,
-        string textureName) {
+        string textureName,
+        GameObject gameObject) {
 
         TagPlanet tagPlanet = new TagPlanet {
 
@@ -125,8 +127,47 @@ public class CardBuilder {
             Name = name,
             TaggedPaperCards = paperCards,
             IsFavorite = isFavorite,
-            TexttureName = textureName
+            TexttureName = textureName,
+            GameObject = gameObject
         };
+
+        //Transform card_interior = gameObject.transform.GetChild(0);
+        //Transform title = card_interior.GetChild(0);
+        //UI.Text titleText = title.GetComponent<UI.Text>();
+        //titleText.text = name;
+
+        //Transform borders0 = card_interior.GetChild(1);
+        //Transform placeholderShipImage = borders0.GetChild(0);
+        //Transform border0 = placeholderShipImage.GetChild(0);
+        //Transform level = border0.GetChild(0);
+        //Transform levelTEXT = level.GetChild(0);
+        //UI.Text levelText = levelTEXT.GetComponent<UI.Text>();
+        //levelText.text = isFavorite ? "*" : "";
+
+        //Transform borders1 = card_interior.GetChild(2);
+        //Transform bg0 = borders1.GetChild(0);
+        //Transform sText = bg0.GetChild(0);
+        //UI.Text shipText = sText.GetComponent<UI.Text>();
+        //shipText.text = "";// paperCard.CiteKey + " - " + paperCard.Year + paperCard.Month;
+
+        //Transform border1 = bg0.GetChild(1);
+        //border1.GetComponent<CanvasGroup>().alpha = 0;
+        ////Transform bg1 = border1.GetChild(0);
+        ////Transform adt = bg1.GetChild(0);
+        ////UnityEngine.UI.Text atkDefText = adt.GetComponent<UnityEngine.UI.Text>();
+        ////atkDefText.text = paperCard.Attack + " / " + paperCard.Defense;
+
+        //Transform bgeffects = card_interior.GetChild(3);
+        //Transform textCrew = bgeffects.GetChild(0);
+        //UI.Text crewText = textCrew.GetComponent<UI.Text>();
+        //crewText.text = "";
+
+        //Transform textEffect = bgeffects.GetChild(1);
+        //UI.Text effectText = textEffect.GetComponent<UI.Text>();
+        //effectText.text = "Best advertisement slots in the galaxy! Cheapest ofer in this parsec and will increase your revenue by 70%. Guaranteed! Just contact Consul Bragkha on Nekoris IV for more detailed information.";
+        //gameObject.transform.localPosition = new Vector3(0, 0, 0);
+        //gameObject.transform.localScale = new Vector3(1, 1, 1);
+        //gameObject.name = name;
 
         return tagPlanet;
     }

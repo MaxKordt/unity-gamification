@@ -5,12 +5,54 @@ using UnityEngine;
 public class OnTrigger : MonoBehaviour  //only showing / rendering top level image color after one exit and then re-entering. giving up on this since inspector shows image to be enabled
 {
 
+     /*
+      * for now obsolote. 
+      * methods for on trigger moved to drag and drop.
+      * for now kept to keep ideas about handling massive amounts of gameobjects in a scroll rect
+      */
+
     private void OnTriggerEnter(Collider other) {
 
         //Debug.Log(gameObject.name + " did enter");
-        //gameObject.GetComponent<CanvasGroup>().alpha = 1.0f;
-        ToggleVisibility(true);
-        //gameObject.SetActive(true);
+        ////gameObject.GetComponent<CanvasGroup>().alpha = 1.0f;
+        ////ToggleVisibility(true);
+        ////gameObject.SetActive(true);
+
+        //string nameG1 = gameObject.name;
+        //string nameG2 = other.gameObject.name;
+
+        ////Repo_Central repo = gameObject.GetComponent<DragAndDrop>().gameMaster.GetComponent<Repo_Central>();
+        ////List<PaperCard> paperCards = repo.GetAllPapercards();
+        ////List<TagPlanet> tagPlanets = repo.GetAllTagPlanets();
+
+        //PaperCard paper = null;
+        //TagPlanet tag = null;
+
+        //foreach (PaperCard paperCard in paperCards) {
+
+        //    if (nameG1 == paperCard.ID | nameG2 == paperCard.ID) {
+
+        //        paper = paperCard;
+        //        break;
+        //    }
+        //}
+
+        //foreach (TagPlanet tagPlanet in tagPlanets) {
+
+        //    if (nameG1 == tagPlanet.ID | nameG2 == tagPlanet.ID) {
+
+        //        tag = tagPlanet;
+        //        break;
+        //    }
+        //}
+
+        //if (paper != null && tag != null) { //paper collides with tag --> add paper to tag / tag to paper
+
+        //    paper.TagList.Add(tag);
+        //    tag.TaggedPaperCards.Add(paper);
+        //    //repo.Save(paper);
+        //    //repo.Save(tag);
+        //}
     }
 
     private void OnTriggerStay(Collider other) {
@@ -23,59 +65,60 @@ public class OnTrigger : MonoBehaviour  //only showing / rendering top level ima
         //ToggleVisibility(true);
         //ToggleVisibility(false);
         //ToggleVisibility(true);
-        gameObject.SetActive(true);
+        //gameObject.SetActive(true);
     }
 
     private void OnTriggerExit(Collider other) {
 
-        Debug.Log(gameObject.name + " did exit");
-        //gameObject.GetComponent<CanvasGroup>().alpha = 0.0f;
-        ToggleVisibility(false);
-        //gameObject.SetActive(false);
-        int siblingIndex = gameObject.transform.GetSiblingIndex();
-        //Debug.Log(gameObject.name + " " + siblingIndex);
-        //gameObject.transform.GetChild(silblingIndex);
-        //Debug.Log(gameObject.transform.parent.transform.GetChild(siblingIndex).name);
-        int minRange = gameObject.GetComponent<DragAndDrop>().gameMaster.GetComponent<main>()._showInitCardCount;
+        //Debug.Log(gameObject.name + " did exit");
+        //Debug.Log(other.gameObject.name + " was exited");
+        ////gameObject.GetComponent<CanvasGroup>().alpha = 0.0f;
+        //ToggleVisibility(false);
+        ////gameObject.SetActive(false);
+        //int siblingIndex = gameObject.transform.GetSiblingIndex();
+        ////Debug.Log(gameObject.name + " " + siblingIndex);
+        ////gameObject.transform.GetChild(silblingIndex);
+        ////Debug.Log(gameObject.transform.parent.transform.GetChild(siblingIndex).name);
+        //int minRange = gameObject.GetComponent<DragAndDrop>().gameMaster.GetComponent<main>()._showInitCardCount;
 
-        for (int i = siblingIndex - minRange; i <= siblingIndex + minRange; i++) {
+        //for (int i = siblingIndex - minRange; i <= siblingIndex + minRange; i++) {
 
-            if (i > 0 && i < gameObject.transform.parent.transform.childCount) {
+        //    if (i > 0 && i < gameObject.transform.parent.transform.childCount) {
 
-                Transform nextImportantSibling = gameObject.transform.parent.transform.GetChild(i);
-                nextImportantSibling.gameObject.SetActive(true);
-                nextImportantSibling.gameObject.GetComponent<CanvasGroup>().alpha = 1;
-                nextImportantSibling.gameObject.GetComponent<BoxCollider>().enabled = true;
-                //nextImportantSibling.gameObject.AddComponent<OnTrigger>();
-            }
-        }
-        if (siblingIndex - minRange + 1 > 0) {
+        //        Transform nextImportantSibling = gameObject.transform.parent.transform.GetChild(i);
+        //        nextImportantSibling.gameObject.SetActive(true);
+        //        nextImportantSibling.gameObject.GetComponent<CanvasGroup>().alpha = 1;
+        //        nextImportantSibling.gameObject.GetComponent<BoxCollider>().enabled = true;
+        //        //nextImportantSibling.gameObject.AddComponent<OnTrigger>();
+        //    }
+        //}
+        //if (siblingIndex - minRange + 1 > 0) {
 
-            //Destroy(gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<OnTrigger>());
-            gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<BoxCollider>().enabled = false;
-            gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.SetActive(false);
-            //gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<CanvasGroup>().alpha = 0;
-        }
-        if (siblingIndex + minRange + 1 < gameObject.transform.parent.transform.childCount) {
+        //    //Destroy(gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<OnTrigger>());
+        //    gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<BoxCollider>().enabled = false;
+        //    gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.SetActive(false);
+        //    //gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<CanvasGroup>().alpha = 0;
+        //}
+        //if (siblingIndex + minRange + 1 < gameObject.transform.parent.transform.childCount) {
 
-            //Destroy(gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<OnTrigger>());
-            gameObject.transform.parent.transform.GetChild(siblingIndex + minRange + 1).gameObject.GetComponent<BoxCollider>().enabled = false;
-            gameObject.transform.parent.transform.GetChild(siblingIndex + minRange + 1).gameObject.SetActive(false);
-        }
-            //if (siblingIndex - minRange > 0) { //can SetActive(false) siblings before itself
+        //    //Destroy(gameObject.transform.parent.transform.GetChild(siblingIndex - minRange + 1).gameObject.GetComponent<OnTrigger>());
+        //    gameObject.transform.parent.transform.GetChild(siblingIndex + minRange + 1).gameObject.GetComponent<BoxCollider>().enabled = false;
+        //    gameObject.transform.parent.transform.GetChild(siblingIndex + minRange + 1).gameObject.SetActive(false);
+        //}
+        //    //if (siblingIndex - minRange > 0) { //can SetActive(false) siblings before itself
 
-            //    Transform nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex - minRange);
-            //    nextImportantSibling.gameObject.SetActive(false);
-            //    nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex + 1 - minRange);
-            //    nextImportantSibling.gameObject.SetActive(true);
-            //}
-            //if (siblingIndex + minRange + 1 < gameObject.transform.parent.transform.childCount) {
+        //    //    Transform nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex - minRange);
+        //    //    nextImportantSibling.gameObject.SetActive(false);
+        //    //    nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex + 1 - minRange);
+        //    //    nextImportantSibling.gameObject.SetActive(true);
+        //    //}
+        //    //if (siblingIndex + minRange + 1 < gameObject.transform.parent.transform.childCount) {
 
-            //    Transform nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex + minRange);
-            //    nextImportantSibling.gameObject.SetActive(true);
-            //    nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex + 1 + minRange);
-            //    nextImportantSibling.gameObject.SetActive(false);
-            //}
+        //    //    Transform nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex + minRange);
+        //    //    nextImportantSibling.gameObject.SetActive(true);
+        //    //    nextImportantSibling = gameObject.transform.parent.transform.GetChild(siblingIndex + 1 + minRange);
+        //    //    nextImportantSibling.gameObject.SetActive(false);
+        //    //}
         }
 
     private void ToggleVisibility() {

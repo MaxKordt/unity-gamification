@@ -645,9 +645,7 @@ GameObject:
   - component: {fileID: -525028817909904552}
   - component: {fileID: -4294070811478838130}
   - component: {fileID: -4388590141458383737}
-  - component: {fileID: 2093957825699917255}
   - component: {fileID: -4176331820126719484}
-  - component: {fileID: 3985751789361103550}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -763,18 +761,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &2093957825699917255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8609839065016045175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ebea47061391d241b1687b98eb18be3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!225 &-4176331820126719484
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -787,20 +773,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 1
---- !u!114 &3985751789361103550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8609839065016045175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25ea63d5724dcbc4582e58a31a781aa4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  gameMaster: {fileID: 0}
 --- !u!1 &8609839065096732787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,6 +1024,7 @@ GameObject:
   - component: {fileID: 8609839065529028175}
   - component: {fileID: 8609839065529028173}
   - component: {fileID: 8609839065529028172}
+  - component: {fileID: 303122509938852856}
   m_Layer: 5
   m_Name: Border
   m_TagString: Untagged
@@ -1118,6 +1091,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &303122509938852856
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8609839065529028174}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8609839065597221637
 GameObject:
   m_ObjectHideFlags: 0
