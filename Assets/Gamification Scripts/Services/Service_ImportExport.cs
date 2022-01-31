@@ -42,9 +42,9 @@ public class Service_ImportExport : MonoBehaviour
         bool success = false;
         try {
 
-            IEnumerator ShowLoadDialogCoroutine() {
+            IEnumerator ShowSaveDialogCoroutine() {
 
-                yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders, false, null, null, "", "Pick save destination");
+                yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.FilesAndFolders, false, null, null, "", "Pick save destination");
                 Debug.Log(FileBrowser.Success);
                 if (FileBrowser.Success) {
 
@@ -54,21 +54,73 @@ public class Service_ImportExport : MonoBehaviour
                     DateTime date = DateTime.Now;
                     string exportPath = selectedLocation + "\\" + date.Year.ToString() + date.Month.ToString() + date.Day.ToString() + date.Hour.ToString() + date.Minute.ToString() + date.Second.ToString() + ".bib";
                     if (selectedLocation.Contains(".txt") | selectedLocation.Contains(".bib")) exportPath = selectedLocation;
-                    if (!File.Exists(exportPath)) File.Create(exportPath);
+                    //if (!File.Exists(exportPath)) File.Create(exportPath);
                     Debug.Log(exportPath);
                     Repo_Central repo = gameMaster.GetComponent<Repo_Central>();
                     List<PaperCard> papers = repo.GetAllPapercards();
                     List<string> exportLines = new List<string>();
                     foreach (PaperCard paper in papers) exportLines.AddRange(BuildStringForPaper(paper));
 
-                    File.WriteAllLines(exportPath, exportLines);
+                    using (StreamWriter sw = new StreamWriter(exportPath, false)) {
+
+                        foreach (string line in exportLines) sw.WriteLine(line);
+                    }
+                    //File.WriteAllLines(exportPath, exportLines);
                     success = true;
                 }
             }
             //open simple file dialog
             FileBrowser.SetFilters(true, new FileBrowser.Filter("BibText", ".bib"), new FileBrowser.Filter("Text", ".txt"));
             FileBrowser.SetDefaultFilter(".bib");
-            StartCoroutine(ShowLoadDialogCoroutine());
+            StartCoroutine(ShowSaveDialogCoroutine());
+        }
+        catch (Exception ex) {
+
+            success = false;
+            //MessageBox.Show("Error during exporting." + "\n" + ex.StackTrace);
+        }
+
+        return success;
+    }
+
+    public bool Export(TagPlanet tag) {
+
+        bool success = false;
+        try {
+
+            IEnumerator ShowSaveDialogCoroutine() {
+
+                DateTime date = DateTime.Now;
+                string preset = tag.Name + date.Year.ToString() + date.Month.ToString() + date.Day.ToString() + ".bib";
+                Debug.Log(preset);
+                yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.FilesAndFolders, false, null, preset, "", "Pick save destination");
+                Debug.Log(FileBrowser.Success);
+                if (FileBrowser.Success) {
+
+                    _filenames = FileBrowser.Result;
+                    string selectedLocation = _filenames[0];
+                    Debug.Log(selectedLocation);
+                    string exportPath = selectedLocation + "\\" + tag.Name + date.Year.ToString() + date.Month.ToString() + date.Day.ToString() + ".bib";// + date.Hour.ToString() + date.Minute.ToString() + date.Second.ToString() + ".bib";
+                    if (selectedLocation.Contains(".txt") | selectedLocation.Contains(".bib")) exportPath = selectedLocation;
+                    //if (!File.Exists(exportPath)) File.Create(exportPath);
+                    Debug.Log(exportPath);
+                    Repo_Central repo = gameMaster.GetComponent<Repo_Central>();
+                    List<string> exportLines = new List<string>();
+                    foreach (PaperCard paper in tag.TaggedPaperCards) exportLines.AddRange(BuildStringForPaper(paper));
+
+                    using (StreamWriter sw = new StreamWriter(exportPath, false)) {
+
+                        foreach (string line in exportLines) sw.WriteLine(line);
+                    }
+
+                    //File.WriteAllLines(exportPath, exportLines);
+                    success = true;
+                }
+            }
+            //open simple file dialog
+            FileBrowser.SetFilters(true, new FileBrowser.Filter("BibText", ".bib"), new FileBrowser.Filter("Text", ".txt"));
+            FileBrowser.SetDefaultFilter(".bib");
+            StartCoroutine(ShowSaveDialogCoroutine());
         }
         catch (Exception ex) {
 

@@ -13,8 +13,9 @@ using UI = UnityEngine.UI;
 public class Service_Hud : MonoBehaviour //updates the Information in every Hub with information from Repo_Central.  
 {
     private Repo_Central repo;
-    public Canvas _hud_Collection;
-    public Canvas _hud_Tags;
+    public GameObject _hud_Collection;
+    public GameObject _hud_Tags;
+    public GameObject _hud_Deck;
     public GameObject _gameMaster;
 
     public UnityEngine.UI.Button _button_Hud_Collection;
@@ -399,9 +400,42 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
     public void Button_Export_Click() {
 
-        if (_gameMaster.GetComponent<Service_ImportExport>().Export()) {
+        if (_hud_Deck.activeSelf) {
 
-            //do something
+            Transform hud = _hud_Deck.transform;
+            Transform bgBorder = hud.GetChild(0);
+            Transform bg = bgBorder.GetChild(0);
+            Transform header = bg.GetChild(0);
+
+            string tagName = header.GetComponent<UI.Text>().text;
+            List<TagPlanet> tags = repo.GetAllTagPlanets();
+            foreach (TagPlanet tag in tags) {
+
+                if (tag.Name == tagName) {
+
+                    _gameMaster.GetComponent<Service_ImportExport>().Export(tag);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void Button_ToggleHudDeck_Click() {
+
+        _hud_Tags.gameObject.SetActive(!_hud_Tags.gameObject.activeSelf);
+        _hud_Deck.gameObject.SetActive(!_hud_Deck.gameObject.activeSelf);
+
+        if (!_hud_Deck.gameObject.activeSelf) { //toggled off
+
+            Transform hud = _hud_Deck.transform;
+            Transform bgBorder = hud.GetChild(0);
+            Transform bg = bgBorder.GetChild(0);
+            Transform panel = bg.GetChild(1);
+            Transform grid = panel.GetChild(0);
+            for (int i = 0; i < grid.childCount; i++) {
+
+                Destroy(grid.GetChild(i).gameObject);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UI = UnityEngine.UI;
 
 public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler {
 
@@ -56,8 +57,40 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         else tag = repo.GetTagPlanetsByIdById(nameG2);
     }
 
+    private float clicked = 0;
+    private float clickTime = 0;
+    private float delay = 0.5f;
     public void OnPointerDown(PointerEventData eventData) {
 
+        //double click to open deck overview
+        clicked++;
+        if (clicked == 1) clickTime = Time.time;
+        else if (clicked > 1 && Time.time - clickTime < delay) {
+
+            clicked = 0;
+            clickTime = 0;
+            //do something
+            TagPlanet tag = repo.GetTagPlanetsByIdById(gameObject.name);
+            if (tag != null) {
+
+                Service_Hud service_Hud = gameMaster.GetComponent<Service_Hud>();
+                service_Hud.Button_ToggleHudDeck_Click();
+                Transform hud = service_Hud._hud_Deck.transform;
+                Transform bgBorder = hud.GetChild(0);
+                Transform bg = bgBorder.GetChild(0);
+                Transform header = bg.GetChild(0);
+                UI.Text text = header.GetComponent<UI.Text>();
+                text.text = tag.Name;
+
+                Transform panel = bg.GetChild(1);
+                Transform grid = panel.GetChild(0);
+                foreach (PaperCard paperCard in tag.TaggedPaperCards) {
+
+                    Instantiate(paperCard.GameObject, grid);
+                }
+            }
+        }
+        else if (clicked > 2 || Time.time - clickTime > 1) clicked = 0;
     }
 
     public void OnDrag(PointerEventData eventData) {
@@ -77,6 +110,13 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         RectTransform copyRT = newGO.GetComponent<RectTransform>();
         copyRT.sizeDelta = new Vector2(tempRT.sizeDelta.x, tempRT.sizeDelta.y);
         newGO.transform.SetSiblingIndex(sibling);
+        newGO.name = newGO.name.Replace("(", "");
+        newGO.name = newGO.name.Replace(")", "");
+        newGO.name = newGO.name.Replace("Clone", "");
+        paper = repo.GetPapercardsById(gameObject.name);
+        paper.GameObject = newGO;
+        repo.Save(paper);
+        paper = null;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
