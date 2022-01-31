@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleFileBrowser;
-
+using System.IO;
 
 public class Service_ImportExport : MonoBehaviour
 {
     public Subservice_CardFactory subservice_CardFactory;
     public GameObject _cardPrefab;
-    public UnityEngine.UI.Image _collectionGrid;
     private string[] _filenames;
+    public GameObject gameMaster;
     public Service_ImportExport()
     {       
         this.subservice_CardFactory = new Subservice_CardFactory();
@@ -18,21 +18,7 @@ public class Service_ImportExport : MonoBehaviour
 
     public List<PaperCard> Import()
     {
-        List <PaperCard> paperCards = new List<PaperCard>();
-
-        IEnumerator ShowLoadDialogCoroutine() {
-
-            yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, null, "load bib file", "load");
-
-            Debug.Log(FileBrowser.Success);
-            if (FileBrowser.Success) {
-
-                _filenames = FileBrowser.Result;
-            }
-        }
-        //open simple file dialog
-        //throws null reference exception. dont know why...
-        StartCoroutine(ShowLoadDialogCoroutine());
+        throw new NotImplementedException();
 
   //      @article{adam2015precision,
   //        title ={ Precision measurement of the mass difference between light nuclei and anti - nuclei},
@@ -44,198 +30,102 @@ public class Service_ImportExport : MonoBehaviour
   //        year ={ 2015},
   //        publisher ={ CERN - PH - EP - DRAFT - ALICE - 2015 - 006}
   //      }
-        string line;
-        //List<string> supportedTypes = new List<string> { "article", "inproceedings", "conference", "misc" };
-        if (_filenames.Length > 0) {
-
-            GameObject gameObject = GameObject.Instantiate(_cardPrefab);
-            PaperCard paperCard = null;
-
-            foreach (string filename in _filenames) {
-
-                using (System.IO.StreamReader file = new System.IO.StreamReader(filename)) {  //get contents of bib file line by line
-
-                    //TODO check what happens if line is just a empty line and not end of document
-                    while ((line = file.ReadLine()) != null) {  //while line not null
-
-                        if (line.StartsWith("@")) { //line is new article, book etc
-
-                            if (paperCard != null) {
-
-                                /// Card
-                                ///     Card_Interior  -- 0
-                                ///         Title -- 0  
-                                ///         Borders0 -- 1
-                                ///             PlaceholderShipImage -- 0
-                                ///                 Border0 -- 0
-                                ///                     Level -- 0 
-                                ///                         Text -- 0
-                                ///         Borders1 -- 2
-                                ///             BG0 -- 0
-                                ///                 Text -- 0
-                                ///                 Border1 -- 1
-                                ///                     BG1 -- 0
-                                ///                         AtkDef -- 0
-                                ///         BG_Efects -- 3
-                                ///             Crew -- 0
-                                ///             Effect -- 0
-                                Transform card_interior = gameObject.transform.GetChild(0);
-                                Transform title = card_interior.GetChild(0);
-                                UnityEngine.UI.Text titleText = title.GetComponent<UnityEngine.UI.Text>();
-                                titleText.text = paperCard.Title;
-
-                                Transform borders0 = card_interior.GetChild(1);
-                                Transform placeholderShipImage = borders0.GetChild(0);
-                                Transform border0 = placeholderShipImage.GetChild(0);
-                                Transform level = border0.GetChild(0);
-                                UnityEngine.UI.Text levelText = level.GetComponent<UnityEngine.UI.Text>();
-                                levelText.text = Convert.ToString(paperCard.Level);
-
-                                Transform borders1 = card_interior.GetChild(2);
-                                Transform bg0 = borders1.GetChild(0);
-                                UnityEngine.UI.Text shipText = bg0.GetComponent<UnityEngine.UI.Text>();
-                                shipText.text = paperCard.CiteKey + " - " + paperCard.Year + paperCard.Month;
-
-                                Transform border1 = bg0.GetChild(1);
-                                Transform bg1 = border1.GetChild(0);
-                                UnityEngine.UI.Text atkDefText = bg1.GetComponent<UnityEngine.UI.Text>();
-                                atkDefText.text = paperCard.Attack + " / " + paperCard.Defense;
-
-                                Transform bgeffects = card_interior.GetChild(3);
-                                UnityEngine.UI.Text[] texts = bgeffects.GetComponents<UnityEngine.UI.Text>();
-                                UnityEngine.UI.Text crewText = texts[0];
-                                string authors = "Crew of";
-                                foreach (string author in paperCard.Authors) {
-
-                                    authors += author + ", ";
-                                }
-                                authors.Remove(authors.Length - 1, 1);
-                                crewText.text = authors;
-
-                                UnityEngine.UI.Text effectText = texts[1];
-                                effectText.text = "Best advertisement slots in the galaxy! Cheapest ofer in this parsec and will increase your revenue by 70%. Guaranteed! Just contact Consul Bragkha on Nekoris IV for more detailed information.";
-
-                                paperCard.GameObject = gameObject;
-                                paperCards.Add(paperCard);   //if not first entry save paper to list and create new entity
-                            }
-                            paperCard = new PaperCard();
-                            string[] split = line.Split(new char[] { '{' });
-                            //string type = split[0].Remove(0, 1);
-                            paperCard.CiteKey = split[1].Remove(split[1].Length - 1, 1);
-                        }
-                        else { //line contains values
-                               //posible keywords/fields taken from https://www.bibtex.com/format/fields/
-
-                            string[] split = line.Split(new string[] { "=" }, StringSplitOptions.None);
-                            if (split.Length > 1) {
-
-                                string keyword = split[0];
-                                string value = split[1];
-                                if (value.Contains("{") && value.Contains("}")) {   //remove {} if exists
-
-                                    value = value.Replace("{", "");
-                                    value = value.Replace("}", "");
-                                }
-                                if (value[value.Length - 1] == ',') value = value.Remove(value.Length - 1, 1); //remove last comma if exists
-                                if (keyword.Contains("title")) paperCard.Title = value; //use contains instead of equals to catch a space and still identify the right keyword (author= vs author =)
-                                if (keyword.Contains("year")) paperCard.Year = value;
-                                if (keyword.Contains("month")) paperCard.Month = value;
-                                if (keyword.Contains("author")) {
-
-                                    if (value.Contains(" and ")) {  //multiple authors syntax Lastname, Firstname and Lastname, Firstname and ...
-
-                                        split = value.Split(new string[] { " and " }, StringSplitOptions.None);
-                                        foreach (string s in split) {
-
-                                            string[] names = s.Split(new string[] { ", " }, StringSplitOptions.None);
-                                            string author;
-                                            if (names.Length > 1) { //if able to split into first and last name
-
-                                                string lastname = names[0];
-                                                string firstname = names[1];
-                                                author = firstname + " " + lastname;
-                                            }
-                                            else author = s;    //else just use whatever was given
-                                            paperCard.Authors.Add(author);
-                                        }
-                                    }
-                                    else {  //something else. Might be just a single author
-
-                                        if (value.Contains(",")) {  //if Lastname, Firstname
-
-                                            string[] names = value.Split(new string[] { ", " }, StringSplitOptions.None);
-                                            string author;
-                                            if (names.Length > 1) { //if able to split into first and last name
-
-                                                string lastname = names[0];
-                                                string firstname = names[1];
-                                                author = firstname + " " + lastname;
-                                            }
-                                            else author = value;    //else just use whatever was given
-                                            paperCard.Authors.Add(author);
-                                        }
-                                        else paperCard.Authors.Add(value);  //else just use whatever is given
-                                    }
-                                }
-
-                                if (keyword.Contains("organization")) {
-
-                                    //no mapping yet
-                                }
-                                if (keyword.Contains("pages")) {
-
-                                    string[] pages = value.Split(new string[] { "--" }, StringSplitOptions.None);   //keyword = pages |value = 811--814
-                                    if (pages.Length > 1) {
-
-                                        string p1 = pages[0];
-                                        string p2 = pages[1];
-                                        int page1 = -1; //default since pages cannot be negative
-                                        int page2 = -1;
-                                        int.TryParse(p1, out page1);
-                                        int.TryParse(p2, out page2);
-                                        if (page1 > -1 && page2 > -1 && page2 > page1) paperCard.NumberOfPages = page2 - page1;
-                                    }
-                                }
-                                if (keyword.Contains("publisher")) {
-
-                                    //no mapping yet
-                                }
-                                if (keyword.Contains("booktitle")) {
-
-                                    //no mapping yet
-                                }
-                                if (keyword.Contains("volume")) {
-
-                                    //no mapping yet
-                                }
-                                if (keyword.Contains("journal")) {
-
-                                    //no mapping yet
-                                }
-                                //if .... all the other maybe needed fields...
-                            }
-
-
-                        }
-                    }
-
-                    if (paperCard != null) {    //to get last paper 
-
-                        paperCard.GameObject = gameObject;
-                        paperCards.Add(paperCard);
-                    }
-                }
-            }
-        }
+        
 
         //cardFactory creates PaperCard from String
         //paperCards.Add(subservice_CardFactory.create("String from import"));
 
-        return paperCards;
     }
 
-    public bool Export(List<PaperCard> paperCards)
-    {
-        throw new NotImplementedException();
+    public bool Export() {
+
+        bool success = false;
+        try {
+
+            IEnumerator ShowLoadDialogCoroutine() {
+
+                yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders, false, null, null, "", "Pick save destination");
+                Debug.Log(FileBrowser.Success);
+                if (FileBrowser.Success) {
+
+                    _filenames = FileBrowser.Result;
+                    string selectedLocation = _filenames[0];
+                    Debug.Log(selectedLocation);
+                    DateTime date = DateTime.Now;
+                    string exportPath = selectedLocation + "\\" + date.Year.ToString() + date.Month.ToString() + date.Day.ToString() + date.Hour.ToString() + date.Minute.ToString() + date.Second.ToString() + ".bib";
+                    if (selectedLocation.Contains(".txt") | selectedLocation.Contains(".bib")) exportPath = selectedLocation;
+                    if (!File.Exists(exportPath)) File.Create(exportPath);
+                    Debug.Log(exportPath);
+                    Repo_Central repo = gameMaster.GetComponent<Repo_Central>();
+                    List<PaperCard> papers = repo.GetAllPapercards();
+                    List<string> exportLines = new List<string>();
+                    foreach (PaperCard paper in papers) exportLines.AddRange(BuildStringForPaper(paper));
+
+                    File.WriteAllLines(exportPath, exportLines);
+                    success = true;
+                }
+            }
+            //open simple file dialog
+            FileBrowser.SetFilters(true, new FileBrowser.Filter("BibText", ".bib"), new FileBrowser.Filter("Text", ".txt"));
+            FileBrowser.SetDefaultFilter(".bib");
+            StartCoroutine(ShowLoadDialogCoroutine());
+        }
+        catch (Exception ex) {
+
+            success = false;
+            //MessageBox.Show("Error during exporting." + "\n" + ex.StackTrace);
+        }
+
+        return success;
+    }
+
+    private List<string> BuildStringForPaper(PaperCard paperCard) {
+
+        //citekey, authors, title, year/month = 4 + 1 for last }
+        List<string> lines = new List<string>();
+
+        //for now just type misc
+        string line = "@misc{" + paperCard.CiteKey + ",";
+        lines.Add(line);
+        line = " author = {";
+        int authorCounter = 0;
+        foreach (string author in paperCard.Authors) {
+
+            authorCounter++;
+            string a = "";
+            if (author.Contains(" ")) {
+
+                string[] split = author.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                a = split[1] + ", " + split[0]; //lastname, firstname
+            }
+            else a = author;
+
+            if (authorCounter != paperCard.Authors.Count) a += " and ";
+            line += a;
+        }
+        line += "},";
+        lines.Add(line);
+        string removeLeadingSpace = paperCard.Title.StartsWith(" ") ? paperCard.Title.Remove(0, 1) : paperCard.Title;
+        line = " title = {{" + removeLeadingSpace + "}},";
+        lines.Add(line);
+        removeLeadingSpace = paperCard.Year.StartsWith(" ") ? paperCard.Year.Remove(0, 1) : paperCard.Year;
+        line = " year = {" + removeLeadingSpace + "}";
+        lines.Add(line);
+        if (paperCard.Month != "" && paperCard.Month != "0") {
+
+            removeLeadingSpace = paperCard.Month.StartsWith(" ") ? paperCard.Month.Remove(0, 1) : paperCard.Month;
+            line = " month = {" + removeLeadingSpace + "}";
+            lines.Add(line);
+        }
+        if (paperCard.NumberOfPagesBib != "") {    //check later with user input pages!
+
+            removeLeadingSpace = paperCard.NumberOfPagesBib.StartsWith(" ") ? paperCard.NumberOfPagesBib.Remove(0, 1) : paperCard.NumberOfPagesBib;
+            line = " pages = {" + removeLeadingSpace + "}";
+            lines.Add(line);
+        }
+        line = "}";
+        lines.Add(line);
+
+        return lines;
     }
 }

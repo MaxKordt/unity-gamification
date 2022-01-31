@@ -358,17 +358,7 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                         }
                                         if (keyword.Contains("pages")) {
 
-                                            string[] pages = value.Split(new string[] { "--" }, StringSplitOptions.None);   //keyword = pages |value = 811--814
-                                            if (pages.Length > 1) {
-
-                                                string p1 = pages[0];
-                                                string p2 = pages[1];
-                                                int page1 = -1; //default since pages cannot be negative
-                                                int page2 = -1;
-                                                int.TryParse(p1, out page1);
-                                                int.TryParse(p2, out page2);
-                                                if (page1 > -1 && page2 > -1 && page2 > page1) paperCard.NumberOfPages = page2 - page1;
-                                            }
+                                            paperCard.NumberOfPagesBib = value;
                                         }
                                         if (keyword.Contains("publisher")) {
 
@@ -404,6 +394,14 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                     foreach (PaperCard card in paperCards) repo.Save(card);
                 }
             }
+        }
+    }
+
+    public void Button_Export_Click() {
+
+        if (_gameMaster.GetComponent<Service_ImportExport>().Export()) {
+
+            //do something
         }
     }
 }

@@ -20,6 +20,7 @@ public class PaperCard
     public string CiteKey { get; set; }
     public List<string> Authors { get; set; }
     public int NumberOfPages { get; set; }  //init as unreasonable page number -1. later check against it to see if pages could be exported from bibtext or not
+    public string NumberOfPagesBib { get; set; }
     public bool AddedToCollection { get; set; }
     public List<TagPlanet> TagList { get; set; }
 
@@ -40,6 +41,7 @@ public class PaperCard
         CiteKey = "";
         Authors = new List<string>();
         NumberOfPages = -1;
+        NumberOfPagesBib = "";
         AddedToCollection = false;
         TagList = new List<TagPlanet>();
 
@@ -66,6 +68,7 @@ public class PaperCard
         CiteKey = "";
         Authors = new List<string>();
         NumberOfPages = -1;
+        NumberOfPagesBib = "";
         AddedToCollection = false;
         TagList = new List<TagPlanet>();
     }
