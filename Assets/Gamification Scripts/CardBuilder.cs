@@ -111,6 +111,8 @@ public class CardBuilder {
             TagList = tagList
         };
 
+        paperCard.Calc_Level();
+
         return paperCard;
     }
 

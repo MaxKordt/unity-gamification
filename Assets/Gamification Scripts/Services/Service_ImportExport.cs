@@ -91,7 +91,7 @@ public class Service_ImportExport : MonoBehaviour
             IEnumerator ShowSaveDialogCoroutine() {
 
                 DateTime date = DateTime.Now;
-                string preset = tag.Name + date.Year.ToString() + date.Month.ToString() + date.Day.ToString() + ".bib";
+                string preset = tag.Name;// + date.Year.ToString() + date.Month.ToString() + date.Day.ToString() + ".bib";
                 Debug.Log(preset);
                 yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.FilesAndFolders, false, null, preset, "", "Pick save destination");
                 Debug.Log(FileBrowser.Success);

@@ -73,31 +73,41 @@ public class PaperCard
         TagList = new List<TagPlanet>();
     }
 
-    private void Calc_Level() {
+    public void Calc_Level() {
 
-        //Formula
-        Level = 0;
+        float.TryParse(Year, out float result);
+        float fromAbs = result - 1920;
+        float fromMaxAbs = DateTime.Now.Year - 1920;
+
+        float normal = fromAbs / fromMaxAbs;
+
+        float toMaxAbs = 10 - 1;
+        float toAbs = toMaxAbs * normal;
+
+        float to = toAbs + 1;
+
+        Level = (int)Math.Round(to);
     }
 
-    private void Calc_Attack() {
+    public void Calc_Attack() {
 
         //Formula
         Attack = 0;
     }
 
-    private void Calc_Defense() {
+    public void Calc_Defense() {
 
         //Formula
         Defense = 0;
     }
 
-    private void Calc_MeanOPV() {
+    public void Calc_MeanOPV() {
 
         //Formula
         Mean_ValueOPV = 0;
     }
 
-    private void Set_Effect(string effect) {
+    public void Set_Effect(string effect) {
 
         //Formula
         Effect = "new Effect";

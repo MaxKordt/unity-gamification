@@ -13,14 +13,27 @@ using UI = UnityEngine.UI;
 public class Service_Hud : MonoBehaviour //updates the Information in every Hub with information from Repo_Central.  
 {
     private Repo_Central repo;
+
     public GameObject _hud_Collection;
     public GameObject _hud_Tags;
     public GameObject _hud_Deck;
+    public GameObject _hud_CardBuilder;
+    public GameObject _hud_Decks;
+    public GameObject _hud_Profile;
+
     public GameObject _gameMaster;
 
-    public UnityEngine.UI.Button _button_Hud_Collection;
-    public UnityEngine.UI.Button _button_Hud_Tags;
-    public UnityEngine.UI.Button _button_Hud_Tags_AddNew;
+    public UI.Button _button_Hud_Collection;
+    public UI.Button _button_Hud_Tags;
+    public UI.Button _button_Hud_Tags_AddNew;
+    public UI.Button _button_hud_CardBuilder;
+    public UI.Button _button_Hud_Decks;
+    public UI.Button _button_Hud_Profile;
+
+    public UI.Button _button_hud_CardBuilder_Color_Red;
+    public UI.Button _button_hud_CardBuilder_Color_Green;
+    public UI.Button _button_hud_CardBuilder_Color_Gold;
+    public UI.Button _button_hud_CardBuilder_Color_Blue;
 
     public GameObject _cardPrefab;
     ///Huds toogle on/off///
@@ -97,6 +110,12 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
         _button_Hud_Tags.gameObject.SetActive(!_button_Hud_Tags.gameObject.activeSelf);
     }
 
+    public void Button_ToggleHudDecks_Click() {
+
+        _hud_Decks.gameObject.SetActive(!_hud_Decks.gameObject.activeSelf);
+        _button_Hud_Decks.gameObject.SetActive(!_button_Hud_Decks.gameObject.activeSelf);
+    }
+
     public void Button_AddNewTag_Click() {
 
         Transform[] transformsChildren = _hud_Tags.transform.GetComponentsInChildren<Transform>(true);
@@ -165,6 +184,76 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
         Refresh_Huds();
     }
+
+    public void Button_AddNewDeck_Click() {
+
+        Transform[] transformsChildren = _hud_Decks.transform.GetComponentsInChildren<Transform>(true);
+        foreach (Transform transform in transformsChildren) {
+
+            if (transform.name == "InputField_NewTag") {
+
+                UnityEngine.UI.InputField inputField = transform.GetComponent<UnityEngine.UI.InputField>();
+                Debug.Log(inputField.text);
+                CardBuilder cardBuilder = new CardBuilder();
+                TagPlanet newTag = cardBuilder.BuildTagPlanet(inputField.text, new List<PaperCard>(), false, "", null);
+                //GameObject newTag_GameObject = newTag.GameObject;
+                newTag.GameObject = Instantiate(_cardPrefab);
+
+                Transform card_interior = newTag.GameObject.transform.GetChild(0);
+                Transform title = card_interior.GetChild(0);
+                UI.Text titleText = title.GetComponent<UI.Text>();
+                titleText.text = newTag.Name;
+
+                Transform borders0 = card_interior.GetChild(1);
+                Transform placeholderShipImage = borders0.GetChild(0);
+                Transform border0 = placeholderShipImage.GetChild(0);
+                Transform level = border0.GetChild(0);
+                Transform levelTEXT = level.GetChild(0);
+                UI.Text levelText = levelTEXT.GetComponent<UI.Text>();
+                levelText.text = "*";// isFavorite ? "*" : "";
+
+                Transform borders1 = card_interior.GetChild(2);
+                Transform bg0 = borders1.GetChild(0);
+                Transform sText = bg0.GetChild(0);
+                UI.Text shipText = sText.GetComponent<UI.Text>();
+                shipText.text = "";// paperCard.CiteKey + " - " + paperCard.Year + paperCard.Month;
+
+                Transform border1 = bg0.GetChild(1);
+                border1.GetComponent<CanvasGroup>().alpha = 0;
+                //Transform bg1 = border1.GetChild(0);
+                //Transform adt = bg1.GetChild(0);
+                //UnityEngine.UI.Text atkDefText = adt.GetComponent<UnityEngine.UI.Text>();
+                //atkDefText.text = paperCard.Attack + " / " + paperCard.Defense;
+
+                Transform bgeffects = card_interior.GetChild(3);
+                Transform textCrew = bgeffects.GetChild(0);
+                UI.Text crewText = textCrew.GetComponent<UI.Text>();
+                crewText.text = "";
+
+                Transform textEffect = bgeffects.GetChild(1);
+                UI.Text effectText = textEffect.GetComponent<UI.Text>();
+                effectText.text = "Best advertisement slots in the galaxy! Cheapest ofer in this parsec and will increase your revenue by 70%. Guaranteed! Just contact Consul Bragkha on Nekoris IV for more detailed information.";
+                newTag.GameObject.transform.localPosition = new Vector3(0, 0, 0);
+                newTag.GameObject.transform.localScale = new Vector3(1, 1, 1);
+                newTag.GameObject.name = newTag.ID;
+
+                Transform hc_bg_border = _hud_Decks.transform.GetChild(0);
+                Transform hc_bg_header = hc_bg_border.GetChild(0);
+                Transform panel = hc_bg_header.GetChild(1);
+                Transform grid = panel.GetChild(0);
+
+                newTag.GameObject.transform.SetParent(grid, false);
+                repo.Save(newTag);
+
+                inputField.text = "";
+
+                break;
+            }
+        }
+
+        Refresh_Huds();
+    }
+
 
     public void Button_Import_Click() {
 
@@ -244,6 +333,7 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                         Transform level = border0.GetChild(0);
                                         Transform levelTEXT = level.GetChild(0);
                                         UnityEngine.UI.Text levelText = levelTEXT.GetComponent<UnityEngine.UI.Text>();
+                                        paperCard.Calc_Level();
                                         levelText.text = Convert.ToString(paperCard.Level);
 
                                         Transform borders1 = card_interior.GetChild(2);
@@ -387,6 +477,7 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                             if (paperCard != null) {    //to get last paper 
 
                                 paperCard.GameObject = gameObject;
+                                paperCard.Calc_Level();
                                 paperCards.Add(paperCard);
                             }
                         }
@@ -436,6 +527,110 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
                 Destroy(grid.GetChild(i).gameObject);
             }
+        }
+    }
+
+    public void Button_ToggleHudCardBuilder_Click() {
+
+        _hud_Profile.gameObject.SetActive(!_hud_Profile.gameObject.activeSelf);
+        _button_Hud_Profile.gameObject.SetActive(!_button_Hud_Profile.gameObject.activeSelf);
+    }
+
+    public void Button_ToggleHudProfile_Click() {
+
+        _hud_Profile.gameObject.SetActive(!_hud_Profile.gameObject.activeSelf);
+        _button_Hud_Profile.gameObject.SetActive(!_button_Hud_Profile.gameObject.activeSelf);
+    }
+
+    public void Button_ChangeCardBorderColor_Red_Click() {
+
+        if (true) { //check if player has collected color red and can use it
+
+            Transform hud = _hud_CardBuilder.transform;
+            Transform bgBorder = hud.GetChild(0);
+            Transform bg = bgBorder.GetChild(0);
+            Transform panel = bg.GetChild(1);
+            Transform gridCard = panel.GetChild(0);
+            Transform card = gridCard.GetChild(0);
+
+            Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
+            service_PaperCards.ChangeCardColor(card, service_PaperCards._colorRed);
+
+            card.name = card.name.Replace("(", "");
+            card.name = card.name.Replace(")", "");
+            card.name = card.name.Replace("Clone", "");
+            Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
+            Debug.Log(card.name);
+            if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorRed);
+        }
+    }
+
+    public void Button_ChangeCardBorderColor_Green_Click() {
+
+        if (false) { //check if player has collected color red and can use it
+
+            Transform hud = _hud_CardBuilder.transform;
+            Transform bgBorder = hud.GetChild(0);
+            Transform bg = bgBorder.GetChild(0);
+            Transform panel = bg.GetChild(1);
+            Transform gridCard = panel.GetChild(0);
+            Transform card = gridCard.GetChild(0);
+
+            Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
+            service_PaperCards.ChangeCardColor(card, service_PaperCards._colorGreen);
+
+            card.name = card.name.Replace("(", "");
+            card.name = card.name.Replace(")", "");
+            card.name = card.name.Replace("Clone", "");
+            Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
+            Debug.Log(card.name);
+            if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorGreen);
+        }
+    }
+
+    public void Button_ChangeCardBorderColor_Gold_Click() {
+
+        if (false) { //check if player has collected color red and can use it
+
+            Transform hud = _hud_CardBuilder.transform;
+            Transform bgBorder = hud.GetChild(0);
+            Transform bg = bgBorder.GetChild(0);
+            Transform panel = bg.GetChild(1);
+            Transform gridCard = panel.GetChild(0);
+            Transform card = gridCard.GetChild(0);
+
+            Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
+            service_PaperCards.ChangeCardColor(card, service_PaperCards._colorGold);
+
+            card.name = card.name.Replace("(", "");
+            card.name = card.name.Replace(")", "");
+            card.name = card.name.Replace("Clone", "");
+            Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
+            Debug.Log(card.name);
+            if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorGold);
+        }
+    }
+
+    public void Button_ChangeCardBorderColor_Blue_Click() {
+
+        if (true) { //check if player has collected color red and can use it
+
+            Transform hud = _hud_CardBuilder.transform;
+            Transform bgBorder = hud.GetChild(0);
+            Transform bg = bgBorder.GetChild(0);
+            Transform panel = bg.GetChild(1);
+            Transform gridCard = panel.GetChild(0);
+            Transform card = gridCard.GetChild(0);
+
+            Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
+            service_PaperCards.ChangeCardColor(card, service_PaperCards._colorBlue);
+
+            card.name = card.name.Replace("(", "");
+            card.name = card.name.Replace(")", "");
+            card.name = card.name.Replace("Clone", "");
+            Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
+            Debug.Log(card.name);
+            if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorBlue);
         }
     }
 }

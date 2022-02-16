@@ -13,6 +13,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     private PaperCard paper = null;
     private TagPlanet tag = null;
     private Repo_Central repo;
+    private GameObject hud_CardBuilder = null;
 
     private void Awake() {
 
@@ -36,6 +37,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
         paper = null;
         tag = null;
+        hud_CardBuilder = null;
 
         string nameG1 = gameObject.name;
         string nameG2 = other.gameObject.name;
@@ -55,6 +57,11 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
             if (t != null) tag = t;
         }
         else tag = repo.GetTagPlanetsByIdById(nameG2);
+
+        if (other.gameObject.name == "Hud_CardBuilder") {
+
+            hud_CardBuilder = other.gameObject;
+        }
     }
 
     private float clicked = 0;
@@ -95,12 +102,10 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
     public void OnDrag(PointerEventData eventData) {
 
-        gameObject.transform.parent = canvas.transform;
+        gameObject.transform.SetParent(canvas.transform);
         gameObject.GetComponent<RectTransform>().anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
-    private Vector3 originalPos;
-    private Transform originalParent;
     public void OnBeginDrag(PointerEventData eventData) {
         //Debug.Log("Begin Drag");
 
@@ -114,12 +119,29 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         newGO.name = newGO.name.Replace(")", "");
         newGO.name = newGO.name.Replace("Clone", "");
         paper = repo.GetPapercardsById(gameObject.name);
-        paper.GameObject = newGO;
-        repo.Save(paper);
+        if (paper != null) {
+
+            paper.GameObject = newGO;
+            repo.Save(paper);
+        }
         paper = null;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
+
+        if (hud_CardBuilder != null) {
+
+            Transform hud = hud_CardBuilder.transform;
+            Transform bgBorder = hud.GetChild(0);
+            Transform bg = bgBorder.GetChild(0);
+            Transform panel = bg.GetChild(1);
+            Transform gridCard = panel.GetChild(0);
+            for (int i = 0; i < gridCard.childCount; i++) {
+
+                Destroy(gridCard.GetChild(i).gameObject);
+            }
+            Instantiate(gameObject, gridCard);
+        }
 
 
         if (paper != null && tag != null) { //paper collides with tag --> add paper to tag / tag to paper
@@ -128,6 +150,22 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
             tag.TaggedPaperCards.Add(paper);
             repo.Save(paper);
             repo.Save(tag);
+
+            foreach (Transform transform in canvas.transform.GetComponentsInChildren<Transform>()) {
+
+                if (transform.name == paper.ID) {
+
+                    Service_PaperCards service_PaperCards = gameMaster.GetComponent<Service_PaperCards>();
+                    service_PaperCards.ChangeCardColor(transform, service_PaperCards._colorBlue);
+                }
+
+                if (transform.name == tag.ID) {
+
+                    Service_PaperCards service_PaperCards = gameMaster.GetComponent<Service_PaperCards>();
+                    service_PaperCards.ChangeCardColor(transform, service_PaperCards._colorBlue);
+                    break;
+                }
+            }
 
             Debug.Log("Found match between Paper: " + paper.Title + " and Tag " + tag.Name);
         }
