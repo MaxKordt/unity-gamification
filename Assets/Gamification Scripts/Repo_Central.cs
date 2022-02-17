@@ -9,6 +9,7 @@ public class Repo_Central : MonoBehaviour
     Dictionary<string, PaperCard> IdPapercardLookup = new Dictionary<string, PaperCard>();
     Dictionary<string, TagPlanet> IdTagPlanetLookup = new Dictionary<string, TagPlanet>();
     Dictionary<string, Hud> IdHudLookup = new Dictionary<string, Hud>();
+    Dictionary<string, Badge> IdBadgeLookup = new Dictionary<string, Badge>();
 
 
     //findAll
@@ -39,6 +40,13 @@ public class Repo_Central : MonoBehaviour
         return items;
     }
 
+    public List<Badge> GetAllBadges() {
+
+        List<Badge> items = new List<Badge>();
+        items.AddRange(IdBadgeLookup.Values);
+        return items;
+    }
+
 
     //find by
     public object GetById(string id)
@@ -51,16 +59,21 @@ public class Repo_Central : MonoBehaviour
         return paperCard;
     }
 
-    public TagPlanet GetTagPlanetsByIdById(string id)
+    public TagPlanet GetTagPlanetsById(string id)
     {
         IdTagPlanetLookup.TryGetValue(id, out TagPlanet tag);
         return tag;
     }
 
-    public Hud GetHudsByIdById(string id)
+    public Hud GetHudsById(string id)
     {
         IdHudLookup.TryGetValue(id, out Hud hud);
         return hud;
+    }
+    public Badge GetBadgeById(string id) {
+
+        IdBadgeLookup.TryGetValue(id, out Badge badge);
+        return badge;
     }
 
     
@@ -82,7 +95,7 @@ public class Repo_Central : MonoBehaviour
 
     public void Save(TagPlanet tagPlanet) //Only use in main Script. Or old versions of objs will be used at some point
     {
-        TagPlanet tag = GetTagPlanetsByIdById(tagPlanet.ID);
+        TagPlanet tag = GetTagPlanetsById(tagPlanet.ID);
         if (tag == null) {    //only add new values if key does not already exist
 
             IdTagPlanetLookup.Add(tagPlanet.ID, tagPlanet);
@@ -97,8 +110,8 @@ public class Repo_Central : MonoBehaviour
 
     public void Save(Hud hud) //Only use in main Script. Or old versions of objs will be used at some point
     {
-        Hud hud_ = GetHudsByIdById(hud.ID);
-        if (tag == null) {    //only add new values if key does not already exist
+        Hud hud_ = GetHudsById(hud.ID);
+        if (hud_ == null) {    //only add new values if key does not already exist
 
             IdHudLookup.Add(hud.ID, hud);
             IdObjectLookup.Add(hud.ID, (object)hud);
@@ -107,6 +120,21 @@ public class Repo_Central : MonoBehaviour
 
             IdHudLookup[hud_.ID] = hud;
             IdObjectLookup[hud_.ID] = hud;
+        }
+    }
+
+    public void Save(Badge badge) {
+
+        Badge badge_ = GetBadgeById(badge.ID);
+        if (badge_ == null) {
+
+            IdBadgeLookup.Add(badge.ID, badge);
+            IdObjectLookup.Add(badge.ID, badge);
+        }
+        else {
+
+            IdBadgeLookup[badge_.ID] = badge;
+            IdObjectLookup[badge_.ID] = badge;
         }
     }
 

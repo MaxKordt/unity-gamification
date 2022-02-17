@@ -50,13 +50,13 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         }
         else paper = repo.GetPapercardsById(nameG2);
 
-        tag = repo.GetTagPlanetsByIdById(nameG1);
+        tag = repo.GetTagPlanetsById(nameG1);
         if (tag != null) {
 
-            TagPlanet t = repo.GetTagPlanetsByIdById(nameG2);
+            TagPlanet t = repo.GetTagPlanetsById(nameG2);
             if (t != null) tag = t;
         }
-        else tag = repo.GetTagPlanetsByIdById(nameG2);
+        else tag = repo.GetTagPlanetsById(nameG2);
 
         if (other.gameObject.name == "Hud_CardBuilder") {
 
@@ -77,7 +77,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
             clicked = 0;
             clickTime = 0;
             //do something
-            TagPlanet tag = repo.GetTagPlanetsByIdById(gameObject.name);
+            TagPlanet tag = repo.GetTagPlanetsById(gameObject.name);
             if (tag != null) {
 
                 Service_Hud service_Hud = gameMaster.GetComponent<Service_Hud>();
