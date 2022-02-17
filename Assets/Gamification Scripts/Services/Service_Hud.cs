@@ -897,4 +897,14 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
             Destroy(currentSelectedGO.transform.parent.parent.gameObject);
         }
     }
+
+    public void Button_Export_Profile_Click() {
+
+        _gameMaster.GetComponent<Service_ImportExport>().Export_Config();
+    }
+
+    public void Button_Import_Profile_Click() {
+
+        _gameMaster.GetComponent<Service_ImportExport>().Import_Config();
+    }
 }

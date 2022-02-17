@@ -131,6 +131,69 @@ public class Service_ImportExport : MonoBehaviour
         return success;
     }
 
+    public void Export_Config() {
+
+        try {
+
+            IEnumerator ShowSaveDialogCoroutine() {
+
+                yield return FileBrowser.WaitForSaveDialog(FileBrowser.PickMode.FilesAndFolders, false, null, null, "", "Pick save destination");
+                Debug.Log(FileBrowser.Success);
+                if (FileBrowser.Success) {
+
+                    _filenames = FileBrowser.Result;
+                    string selectedLocation = _filenames[0];
+                    Debug.Log(selectedLocation);
+                    DateTime date = DateTime.Now;
+                    string exportPath = selectedLocation + "\\" + date.Year.ToString() + date.Month.ToString() + date.Day.ToString() + date.Hour.ToString() + date.Minute.ToString() + date.Second.ToString() + ".bib";
+                    if (selectedLocation.Contains(".txt") | selectedLocation.Contains(".bib")) exportPath = selectedLocation;
+                    //if (!File.Exists(exportPath)) File.Create(exportPath);
+                    Debug.Log(exportPath);
+                    Repo_Central repo = gameMaster.GetComponent<Repo_Central>();
+
+                    List<string> exportLines = new List<string>();
+
+                    List<PaperCard> papers = repo.GetAllPapercards();
+                    foreach (PaperCard paper in papers) exportLines.AddRange(BuildStringForConfigExport(paper));
+                    List<TagPlanet> tags = repo.GetAllTagPlanets();
+                    foreach (TagPlanet tag in tags) exportLines.AddRange(BuildStringForConfigExport(tag));
+                    List<Badge> badges = repo.GetAllBadges();
+                    foreach (Badge badge in badges) exportLines.AddRange(BuildStringForConfigExport(badge));
+
+                    using (StreamWriter sw = new StreamWriter(exportPath, false)) {
+
+                        foreach (string line in exportLines) sw.WriteLine(line);
+                    }
+                    //File.WriteAllLines(exportPath, exportLines);
+                }
+            }
+            //open simple file dialog
+            FileBrowser.SetFilters(true, new FileBrowser.Filter("BibText", ".bib"), new FileBrowser.Filter("Text", ".txt"));
+            FileBrowser.SetDefaultFilter(".bib");
+            StartCoroutine(ShowSaveDialogCoroutine());
+        }
+        catch (Exception ex) {
+
+            //MessageBox.Show("Error during exporting." + "\n" + ex.StackTrace);
+        }
+
+
+
+
+        //export papers
+
+        //export tags
+
+        //export decks
+
+        //export badges
+    }
+
+    public void Import_Config() {
+
+
+    }
+
     private List<string> BuildStringForPaper(PaperCard paperCard) {
 
         //citekey, authors, title, year/month = 4 + 1 for last }
@@ -177,6 +240,27 @@ public class Service_ImportExport : MonoBehaviour
         }
         line = "}";
         lines.Add(line);
+
+        return lines;
+    }
+
+    private List<string> BuildStringForConfigExport(PaperCard paperCard) {
+
+        List<string> lines = new List<string>();
+
+        return lines;
+    }
+
+    private List<string> BuildStringForConfigExport(TagPlanet tag) {
+
+        List<string> lines = new List<string>();
+
+        return lines;
+    }
+
+    private List<string> BuildStringForConfigExport(Badge badge) {
+
+        List<string> lines = new List<string>();
 
         return lines;
     }
