@@ -96,7 +96,7 @@ public class main : MonoBehaviour //executes Action when buttons are pressed or 
                 new List<string> { "1" },
                 1,
                 new List<Tuple<string, string>>(),
-                "Import papers\n Week " + GetIso8601WeekOfYear(DateTime.Now),
+                "Import papers Week " + GetIso8601WeekOfYear(DateTime.Now),
                 false);
 
             GameObject newBadge = Instantiate(_badgePrefab, gridQuests);

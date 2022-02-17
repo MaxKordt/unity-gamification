@@ -138,7 +138,7 @@ public class CardBuilder {
             Name = name,
             TaggedPaperCards = paperCards,
             IsFavorite = isFavorite,
-            TexttureName = textureName,
+            TextureName = textureName,
             GameObject = gameObject
         };
 

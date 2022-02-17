@@ -176,22 +176,75 @@ public class Service_ImportExport : MonoBehaviour
 
             //MessageBox.Show("Error during exporting." + "\n" + ex.StackTrace);
         }
-
-
-
-
-        //export papers
-
-        //export tags
-
-        //export decks
-
-        //export badges
     }
 
     public void Import_Config() {
 
+        //importWasClicked = true;
+        string[] filenames;
 
+        List<PaperCard> paperCards = new List<PaperCard>();
+        List<TagPlanet> tagPlanets = new List<TagPlanet>();
+        List<Badge> badges = new List<Badge>();
+
+        //open simple file dialog
+        StartCoroutine(ShowLoadDialogCoroutine());
+
+        IEnumerator ShowLoadDialogCoroutine() {
+
+            yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, "all.bib", "load bib file", "load");
+
+            Debug.Log(FileBrowser.Success);
+            if (FileBrowser.Success) {
+
+                filenames = FileBrowser.Result;
+                string line;
+                //List<string> supportedTypes = new List<string> { "article", "inproceedings", "conference", "misc" };
+                if (filenames.Length > 0) {
+
+                    foreach (string filename in filenames) {
+
+                        using (System.IO.StreamReader file = new System.IO.StreamReader(filename)) {  //get contents of bib file line by line
+
+                            PaperCard paper;
+                            TagPlanet tag;
+                            Badge badge;
+                            //TODO check what happens if line is just a empty line and not end of document
+                            while ((line = file.ReadLine()) != null) {  //while line not null
+
+                                if (line.Contains("{")) { //line is new article, book etc
+
+                                    if (line.Contains("paper")) {
+
+
+                                    }
+                                    else if (line.Contains("tag")) {
+
+
+                                    }
+                                    else if (line.Contains("badge")) {
+
+
+                                    }
+                                }
+                                else if (line.Contains("}")) {
+
+
+                                }
+                                else {
+
+
+                                }
+                            }
+
+                        }
+                    }
+
+                    foreach (PaperCard card in paperCards) gameMaster.GetComponent<Repo_Central>().Save(card);
+                }
+
+            }
+        }
     }
 
     private List<string> BuildStringForPaper(PaperCard paperCard) {
@@ -248,20 +301,114 @@ public class Service_ImportExport : MonoBehaviour
 
         List<string> lines = new List<string>();
 
+        string line = "paper{";
+        lines.Add(line);
+
+        line = "ID = " + paperCard.ID;
+        lines.Add(line);
+        line = "Title = " + paperCard.Title;
+        lines.Add(line);
+        line = "Year = " + paperCard.Year;
+        lines.Add(line);
+        line = "Month = " + paperCard.Month;
+        lines.Add(line);
+        line = "NumberOfBeingReferenced = " + paperCard.NumberOfBeingReferenced;
+        lines.Add(line);
+        line = "Level = " + paperCard.Level;
+        lines.Add(line);
+        line = "Mean_ValueOPV = " + paperCard.Mean_ValueOPV;
+        lines.Add(line);
+        line = "Attack = " + paperCard.Attack;
+        lines.Add(line);
+        line = "Defense = " + paperCard.Defense;
+        lines.Add(line);
+        line = "Effect = " + paperCard.Effect;
+        lines.Add(line);
+        line = "CiteKey = " + paperCard.CiteKey;
+        lines.Add(line);
+        foreach (string author in paperCard.Authors) {
+
+            line = "Author = " + author;
+            lines.Add(line);
+        }
+        lines.Add(line);
+        line = "NumberOfPages = " + paperCard.NumberOfPages;
+        lines.Add(line);
+        line = "NumberOfPagesBib = " + paperCard.NumberOfPagesBib;
+        lines.Add(line);
+        line = "AddedToCollection = " + paperCard.AddedToCollection.ToString();
+        lines.Add(line);
+        foreach (TagPlanet tag in paperCard.TagList) {
+
+            line = "Tag = " + tag.ID;
+            lines.Add(line);
+        }
+        lines.Add(line);
+        line = "Sprite = " + paperCard.Sprite.name;
+        lines.Add(line);
+        line = "Color = " + paperCard.Color.ToString();
+        lines.Add(line);
+        line = "}";
+        lines.Add(line);
         return lines;
     }
 
     private List<string> BuildStringForConfigExport(TagPlanet tag) {
 
         List<string> lines = new List<string>();
+        string line = "tag{";
+        lines.Add(line);
+        line = "ID = " + tag.ID;
+        lines.Add(line);
+        line = "Name = " + tag.Name;
+        lines.Add(line);
+        line = "IsFavorite = " + tag.IsFavorite.ToString();
+        lines.Add(line);
+        line = "TextureName = " + tag.TextureName;
+        lines.Add(line);
+        foreach (PaperCard paper in tag.TaggedPaperCards) {
 
+            line = "Paper = " + paper.ID;
+            lines.Add(line);
+        }
+        line = "}";
+        lines.Add(line);
         return lines;
     }
 
     private List<string> BuildStringForConfigExport(Badge badge) {
 
         List<string> lines = new List<string>();
+        string line = "badge{";
+        lines.Add(line);
+        line = "ID = " + badge.ID;
+        lines.Add(line);
+        line = "Title = " + badge.Title;
+        lines.Add(line);
+        line = "Current = " + badge.Current;
+        lines.Add(line);
+        line = "Goal = " + badge.Goal;
+        lines.Add(line);
+        line = "Describtion = " + badge.Describtion;
+        lines.Add(line);
+        line = "ShortDescribtion = " + badge.ShortDescribtion;
+        lines.Add(line);
+        line = "Stage = " + badge.Stage.ToString();
+        lines.Add(line);
+        line = "Completed = " + badge.Completed.ToString();
+        lines.Add(line);
+        foreach (string rank in badge.Ranks) {
 
+            line = "Rank = " + rank;
+            lines.Add(line);
+        }
+        foreach (Tuple<string, string> t in badge.Rewards) {
+
+            line = "Reward = " + t.Item1 + ":" + t.Item2;
+            lines.Add(line);
+        }
+        line = "}";
+        lines.Add(line);
         return lines;
     }
 }

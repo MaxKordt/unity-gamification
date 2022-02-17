@@ -338,20 +338,23 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                         UI.Text effectText = textEffect.GetComponent<UI.Text>();
                                         effectText.text = "Best advertisement slots in the galaxy! Cheapest ofer in this parsec and will increase your revenue by 70%. Guaranteed! Just contact Consul Bragkha on Nekoris IV for more detailed information.";
 
-                                        bool exists = false;
-                                        foreach (PaperCard paper in repo.GetAllPapercards()) {
+                                        //bugged
+                                        //bool exists = false;
+                                        //foreach (PaperCard paper in repo.GetAllPapercards()) {
 
-                                            if (paper.Title == paperCard.Title) {
+                                        //    if (paper.Title == paperCard.Title) {
 
-                                                exists = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!exists) {
+                                        //        exists = true;
+                                        //        break;
+                                        //    }
+                                        //}
+                                        //Debug.Log(importCounter);
+                                        //if (!exists) {
 
-                                            paperCards.Add(paperCard);   //if not first entry save paper to list and create new entity
-                                            importCounter--;
-                                        }
+                                        //    paperCards.Add(paperCard);   //if not first entry save paper to list and create new entity
+                                        //    importCounter--;
+                                        //    Debug.Log(importCounter);
+                                        //}
                                     }
 
                                     paperCard = new PaperCard();
