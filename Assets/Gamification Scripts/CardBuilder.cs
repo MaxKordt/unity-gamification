@@ -152,7 +152,9 @@ public class CardBuilder {
         string describtion,
         List<string> ranks,
         int stage,
-        List<Tuple<string, string>> rewards) {
+        List<Tuple<string, string>> rewards,
+        string shortDescribtion,
+        bool completed) {
 
         Badge badge = new Badge {
 
@@ -164,7 +166,9 @@ public class CardBuilder {
             Ranks = ranks,
             Stage = stage,
             Rewards = rewards,
-            GameObject = GameObject
+            GameObject = GameObject,
+            ShortDescribtion = shortDescribtion,
+            Completed = completed
         };
 
         return badge;

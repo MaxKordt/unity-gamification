@@ -15,6 +15,14 @@ public class Service_PaperCards : MonoBehaviour //updates the Information in eve
     public Color _colorGreen;
     public Color _colorRed;
     public Color _colorGold;
+    public Color _colorDarkBlue;
+    public Color _colorDarkRed;
+    public Color _colorDarkGreen;
+
+    public Sprite _shipImage1;
+    public Sprite _shipImage2;
+    public Sprite _shipImage3;
+    public Sprite _shipImage4;
 
     private void Awake() {
 

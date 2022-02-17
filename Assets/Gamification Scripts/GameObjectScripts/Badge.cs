@@ -13,6 +13,8 @@ public class Badge {
     public int Stage { get; set; }
     public GameObject GameObject { get; set; }
     public List<Tuple<string, string>> Rewards { get; set; }
+    public string ShortDescribtion { get; set; }
+    public bool Completed { get; set; }
 
     public Badge() {
 
@@ -25,5 +27,7 @@ public class Badge {
         Stage = 0;
         GameObject = null;
         Rewards = new List<Tuple<string, string>>();
+        ShortDescribtion = "";
+        Completed = false;
     }
 }

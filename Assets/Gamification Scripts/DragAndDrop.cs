@@ -14,6 +14,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     private TagPlanet tag = null;
     private Repo_Central repo;
     private GameObject hud_CardBuilder = null;
+    public GameObject _tag_list_element_Prefab;
 
     private void Awake() {
 
@@ -141,6 +142,34 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
                 Destroy(gridCard.GetChild(i).gameObject);
             }
             Instantiate(gameObject, gridCard);
+
+            PaperCard paperCard = repo.GetPapercardsById(paper.ID);
+            Transform gridTags = null;
+            foreach (Transform transform in hud_CardBuilder.transform.GetComponentsInChildren<Transform>()) {
+
+                if (transform.name == "GridTags") {
+
+                    gridTags = transform;
+                    break;
+                }
+            }
+            if (gridTags != null) {
+
+                foreach (TagPlanet tag in paperCard.TagList) {
+
+                    GameObject gO = Instantiate(gameMaster.GetComponent<main>()._tag_list_element_Prefab, gridTags);
+                    gO.transform.localPosition = new Vector3(0, 0, 0);
+                    gO.name = tag.ID;
+                    foreach (Transform transform in gO.transform.GetComponentsInChildren<Transform>()) {
+
+                        if (transform.name == "Button") {
+
+                            transform.name = tag.ID;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -148,15 +177,21 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
             paper.TagList.Add(tag);
             tag.TaggedPaperCards.Add(paper);
-            repo.Save(paper);
-            repo.Save(tag);
-
+            Debug.Log("End " + paper.ID + "   " + tag.Name);
             foreach (Transform transform in canvas.transform.GetComponentsInChildren<Transform>()) {
 
                 if (transform.name == paper.ID) {
 
                     Service_PaperCards service_PaperCards = gameMaster.GetComponent<Service_PaperCards>();
                     service_PaperCards.ChangeCardColor(transform, service_PaperCards._colorBlue);
+
+                    foreach (Transform transform1 in transform.GetComponentsInChildren<Transform>()) {
+
+                        if (transform1.name == "Tags") {
+
+                            transform1.GetComponent<UI.Text>().text += transform1.GetComponent<UI.Text>().text == "" ? tag.Name : ", " + tag.Name;
+                        }
+                    }
                 }
 
                 if (transform.name == tag.ID) {
@@ -166,6 +201,9 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
                     break;
                 }
             }
+
+            repo.Save(paper);
+            repo.Save(tag);
 
             Debug.Log("Found match between Paper: " + paper.Title + " and Tag " + tag.Name);
         }

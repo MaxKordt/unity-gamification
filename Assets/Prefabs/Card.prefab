@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.98039216, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.06448603, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -68,18 +68,18 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 16
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Mathe, Physik, Therapie, Musik
+  m_Text: Neverwinter, WoW, MAthe, Sterne, Physiotherapie, Biologie
 --- !u!1 &8609839064153261902
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 8609839064401090740}
   - component: {fileID: 8609839064401090743}
   m_Layer: 5
-  m_Name: Borders
+  m_Name: BordersShip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 8609839064428148047}
   - component: {fileID: 8609839064428148046}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TextLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.95686275, b: 0, a: 1}
+  m_Color: {r: 0.4528302, g: 0.41052765, b: 0.21573514, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 8609839064567123247}
   - component: {fileID: 8609839064567123246}
   m_Layer: 5
-  m_Name: Border
+  m_Name: BorderLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -865,7 +865,7 @@ GameObject:
   - component: {fileID: 8609839065096732798}
   - component: {fileID: 8609839065096732785}
   m_Layer: 5
-  m_Name: BG
+  m_Name: BG_AtkDef
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -942,7 +942,7 @@ GameObject:
   - component: {fileID: 8609839065178823863}
   - component: {fileID: 8609839065178823862}
   m_Layer: 5
-  m_Name: Level
+  m_Name: LevelBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1080,7 +1080,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -1106,7 +1106,7 @@ GameObject:
   - component: {fileID: 8609839065529028172}
   - component: {fileID: 303122509938852856}
   m_Layer: 5
-  m_Name: Border
+  m_Name: BorderAtkDef
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1195,7 +1195,7 @@ GameObject:
   - component: {fileID: 8609839065597221632}
   - component: {fileID: 8609839065597221635}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TextYear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1275,7 +1275,7 @@ GameObject:
   - component: {fileID: 8609839065698946182}
   - component: {fileID: 8609839065698946425}
   m_Layer: 5
-  m_Name: BG
+  m_Name: BG_Year
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1432,7 +1432,7 @@ GameObject:
   - component: {fileID: 8609839065850095253}
   - component: {fileID: 8609839065850095252}
   m_Layer: 5
-  m_Name: Borders
+  m_Name: BordersYear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

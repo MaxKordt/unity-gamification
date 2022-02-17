@@ -23,6 +23,8 @@ public class PaperCard
     public string NumberOfPagesBib { get; set; }
     public bool AddedToCollection { get; set; }
     public List<TagPlanet> TagList { get; set; }
+    public Color Color { get; set; }
+    public Sprite Sprite { get; set; }
 
     public GameObject GameObject { get; set; } //Visual Card Ship
 
@@ -44,12 +46,7 @@ public class PaperCard
         NumberOfPagesBib = "";
         AddedToCollection = false;
         TagList = new List<TagPlanet>();
-
-        //this.Level = helpfunktion1(publishedDate, references);           //implements the mapping to obje good paper att to card vars
-        //this.LvarageOfOPV = helpfunktion2(publishedDate, references);           //implements the mapping to obje good paper att to card vars
-        //this.Attack = helpfunktion3(publishedDate, references);           //implements the mapping to obje good paper att to card vars
-        //this.Defense = helpfunktion4(publishedDate, references);           //implements the mapping to obje good paper att to card vars
-        //this.Effect = helpfunktion5(publishedDate, references);           //implements the mapping to obje good paper att to card vars
+        Sprite = null;
     }
 
     public PaperCard() {
@@ -62,8 +59,8 @@ public class PaperCard
         NumberOfBeingReferenced = 0;
         Level = 0;
         Mean_ValueOPV = 0;
-        Attack = 0;
-        Defense = 0;
+        Attack = new System.Random().Next(1, 9);
+        Defense = new System.Random().Next(1, 9);
         Effect = "";
         CiteKey = "";
         Authors = new List<string>();
@@ -71,6 +68,7 @@ public class PaperCard
         NumberOfPagesBib = "";
         AddedToCollection = false;
         TagList = new List<TagPlanet>();
+        Sprite = null;
     }
 
     public void Calc_Level() {
@@ -88,7 +86,8 @@ public class PaperCard
 
         Level = (int)Math.Round(to);
     }
-
+    
+    //in concept, more values will be availabe, scoring for being cited, peer reviewed etc that would allow to calculate a good value for atk def
     public void Calc_Attack() {
 
         //Formula
@@ -112,30 +111,4 @@ public class PaperCard
         //Formula
         Effect = "new Effect";
     }
-
-
-    //    private string helpfunktion5(string publishedDate, string references)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private int helpfunktion4(string publishedDate, string references)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private int helpfunktion3(string publishedDate, string references)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private int helpfunktion2(string publishedDate, string references)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private int helpfunktion1(string publishedDate, string references)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
 }

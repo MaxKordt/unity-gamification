@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UI = UnityEngine.UI;
 
 
@@ -35,9 +36,12 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
     public UI.Button _button_hud_CardBuilder_Color_Gold;
     public UI.Button _button_hud_CardBuilder_Color_Blue;
 
+    public GameObject _ship1_prefab;
+    public GameObject _ship2_prefab;
+    public GameObject _ship3_prefab;
+    public GameObject _ship4_prefab;
+
     public GameObject _cardPrefab;
-    ///Huds toogle on/off///
-    bool Hud_Fleet = false; //global so that it can be tested from UI. Toogle with main script when button is pressed.
 
     private void Awake() {
 
@@ -66,36 +70,6 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
     
     public void Refresh_Huds() {
 
-        //Hud -- Others
-        List<TagPlanet> tags = repo.GetAllTagPlanets();
-        Transform hc_bg_border = _hud_Tags.transform.GetChild(0);
-        Transform hc_bg_header = hc_bg_border.GetChild(0);
-        Transform panel = hc_bg_header.GetChild(1);
-        Transform grid = panel.GetChild(0);
-        List<Transform> transforms = new List<Transform>();
-
-        //for (int i = 0; i < grid.childCount; i++) transforms.Add(grid.GetChild(i));
-
-        foreach (TagPlanet tagPlanet in tags) {
-
-            //if (!tagPlanet.GameObject.activeInHierarchy) {
-
-            //    Instantiate(tagPlanet.GameObject);
-            //    tagPlanet.GameObject.transform.SetParent(grid, false);
-            //}
-            
-            //bool notFound = true;
-            //foreach (Transform transform in transforms) {
-
-            //    if (transform.name == tagPlanet.Name) {
-
-            //        notFound = false;
-            //        break;
-            //    }
-            //}
-
-            //if (notFound) Instantiate(tagPlanet.GameObject);
-        }
     }
 
     public void Button_ToggleHudCollection_Click() {
@@ -259,14 +233,15 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
         //importWasClicked = true;
         string[] filenames;
+
         List<PaperCard> paperCards = new List<PaperCard>();
 
         //open simple file dialog
         StartCoroutine(ShowLoadDialogCoroutine());
 
-
         IEnumerator ShowLoadDialogCoroutine() {
 
+            int importCounter = 0;
             yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, "all.bib", "load bib file", "load");
 
             Debug.Log(FileBrowser.Success);
@@ -324,7 +299,7 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                         //Transform card_interior = card.GetChild(0);
                                         Transform card_interior = paperCard.GameObject.transform.GetChild(0);
                                         Transform title = card_interior.GetChild(0);
-                                        UnityEngine.UI.Text titleText = title.GetComponent<UnityEngine.UI.Text>();
+                                        UI.Text titleText = title.GetComponent<UI.Text>();
                                         titleText.text = paperCard.Title;
 
                                         Transform borders0 = card_interior.GetChild(1);
@@ -332,25 +307,25 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                         Transform border0 = placeholderShipImage.GetChild(0);
                                         Transform level = border0.GetChild(0);
                                         Transform levelTEXT = level.GetChild(0);
-                                        UnityEngine.UI.Text levelText = levelTEXT.GetComponent<UnityEngine.UI.Text>();
+                                        UI.Text levelText = levelTEXT.GetComponent<UI.Text>();
                                         paperCard.Calc_Level();
                                         levelText.text = Convert.ToString(paperCard.Level);
 
                                         Transform borders1 = card_interior.GetChild(2);
                                         Transform bg0 = borders1.GetChild(0);
                                         Transform sText = bg0.GetChild(0);
-                                        UnityEngine.UI.Text shipText = sText.GetComponent<UnityEngine.UI.Text>();
+                                        UI.Text shipText = sText.GetComponent<UI.Text>();
                                         shipText.text = paperCard.CiteKey + " - " + paperCard.Year + paperCard.Month;
 
                                         Transform border1 = bg0.GetChild(1);
                                         Transform bg1 = border1.GetChild(0);
                                         Transform adt = bg1.GetChild(0);
-                                        UnityEngine.UI.Text atkDefText = adt.GetComponent<UnityEngine.UI.Text>();
+                                        UI.Text atkDefText = adt.GetComponent<UI.Text>();
                                         atkDefText.text = paperCard.Attack + " / " + paperCard.Defense;
 
                                         Transform bgeffects = card_interior.GetChild(3);
                                         Transform textCrew = bgeffects.GetChild(0);
-                                        UnityEngine.UI.Text crewText = textCrew.GetComponent<UnityEngine.UI.Text>();
+                                        UI.Text crewText = textCrew.GetComponent<UI.Text>();
                                         string authors = "Crew of ";
                                         foreach (string author in paperCard.Authors) {
 
@@ -360,21 +335,102 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
                                         crewText.text = authors;
 
                                         Transform textEffect = bgeffects.GetChild(1);
-                                        UnityEngine.UI.Text effectText = textEffect.GetComponent<UnityEngine.UI.Text>();
+                                        UI.Text effectText = textEffect.GetComponent<UI.Text>();
                                         effectText.text = "Best advertisement slots in the galaxy! Cheapest ofer in this parsec and will increase your revenue by 70%. Guaranteed! Just contact Consul Bragkha on Nekoris IV for more detailed information.";
 
-                                        paperCards.Add(paperCard);   //if not first entry save paper to list and create new entity
+                                        bool exists = false;
+                                        foreach (PaperCard paper in repo.GetAllPapercards()) {
+
+                                            if (paper.Title == paperCard.Title) {
+
+                                                exists = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!exists) {
+
+                                            paperCards.Add(paperCard);   //if not first entry save paper to list and create new entity
+                                            importCounter--;
+                                        }
                                     }
+
                                     paperCard = new PaperCard();
+
+                                    Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
+                                    int r = new System.Random().Next(4);
+                                    if (r == 0) {
+
+                                        paperCard.Sprite = service_PaperCards._shipImage1;
+                                    }
+                                    else if (r == 1) {
+
+                                        paperCard.Sprite = service_PaperCards._shipImage2;
+                                    }
+                                    else if (r == 2) {
+
+                                        paperCard.Sprite = service_PaperCards._shipImage3;
+                                    }
+                                    else if (r == 3) {
+
+                                        paperCard.Sprite = service_PaperCards._shipImage4;
+                                    }
+
                                     paperCard.GameObject = Instantiate(_cardPrefab);
+                                    importCounter++;
                                     //paperCard.GameObject.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
                                     Transform transformGameObjectCopy = paperCard.GameObject.transform;
+
+                                    foreach (Transform transform in transformGameObjectCopy.GetComponentsInChildren<Transform>()) {
+
+                                        if (transform.name == "PlaceholderShipImage") {
+
+                                            UI.Image image = transform.GetComponent<UI.Image>();
+                                            image.sprite = paperCard.Sprite;
+                                        }
+
+                                        if (transform.name == "Tags") {
+
+                                            UI.Text tagText = transform.GetComponent<UI.Text>();
+                                            tagText.text = "";
+                                        }
+                                    }
 
                                     if (showing <= 0) {
 
                                         paperCard.GameObject.SetActive(false);
                                         paperCard.GameObject.GetComponent<BoxCollider>().enabled = false;
                                         //paperCard.GameObject.GetComponent<OnTrigger>().enabled = false;
+                                    }
+                                    else {
+
+                                        if (showing % 4 == 0) {
+
+                                            GameObject ship = Instantiate(_ship1_prefab);
+                                            ship.name = "ship" + showing;
+                                            ship.transform.position = new Vector3(0, 0, 125);
+                                            ship.SetActive(true);
+                                        }
+                                        else if (showing % 4 == 1) {
+
+                                            GameObject ship = Instantiate(_ship2_prefab);
+                                            ship.name = "ship" + showing;
+                                            ship.transform.position = new Vector3(0, 0, 125);
+                                            ship.SetActive(true);
+                                        }
+                                        else if (showing % 4 == 2) {
+
+                                            GameObject ship = Instantiate(_ship3_prefab);
+                                            ship.name = "ship" + showing;
+                                            ship.transform.position = new Vector3(0, 0, 125);
+                                            ship.SetActive(true);
+                                        }
+                                        else if (showing % 4 == 3) {
+
+                                            GameObject ship = Instantiate(_ship4_prefab);
+                                            ship.name = "ship" + showing;
+                                            ship.transform.position = new Vector3(0, 0, 125);
+                                            ship.SetActive(true);
+                                        }
                                     }
                                     showing--;
                                     //Debug.Log(showing);
@@ -485,6 +541,153 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
                     foreach (PaperCard card in paperCards) repo.Save(card);
                 }
+
+                if (importCounter > 0) {
+
+                    List<Badge> badges = repo.GetAllBadges();
+                    foreach (Badge badge in badges) {
+
+                        if (badge.Title.Contains("Weekly")) {
+
+                            if (!badge.Completed) {
+
+                                badge.Current += importCounter;
+
+                                Transform card = badge.GameObject.transform;
+                                foreach (Transform transform in card.GetComponentsInChildren<Transform>()) {
+
+                                    if (transform.name == "TextProgress") {
+
+                                        UI.Text text = transform.GetComponent<UI.Text>();
+                                        text.text = badge.Current + " / " + badge.Goal;
+                                    }
+                                    if (transform.name == "ProgressBar") {
+
+                                        UI.Slider slider = transform.GetComponent<UI.Slider>();
+                                        slider.value = 0;
+                                        slider.value += float.Parse(badge.Current) / float.Parse(badge.Goal);
+                                    }
+                                }
+
+                                repo.Save(badge);
+                            }
+                        }
+
+                        if (badge.Title == "Collector") {
+
+                            int currently;
+                            int goal = int.Parse(badge.Goal);
+                            if (int.TryParse(badge.Current, out currently)) {
+
+                                currently += importCounter;
+                                badge.Current = currently.ToString();
+                                badge.Stage = 0;
+                                foreach (string rank in badge.Ranks) {
+
+                                    int r = int.Parse(rank);
+                                    if (currently >= r) {
+
+                                        badge.Stage++;
+                                        badge.Goal = badge.Stage < badge.Ranks.Count ? badge.Ranks[badge.Stage] : badge.Ranks[badge.Ranks.Count - 1];
+                                        goal = int.Parse(badge.Goal);
+                                    }
+                                    else break;
+                                }
+                            }
+
+                            //Debug.Log("currently: " + currently);
+                            //Debug.Log("goal: " + badge.Goal);
+                            Transform card = badge.GameObject.transform;
+                            foreach (Transform transform in card.GetComponentsInChildren<Transform>()) {
+
+                                if (transform.name == "TextStage") {
+
+                                    UI.Text text = transform.GetComponent<UI.Text>();
+                                    text.text = badge.Stage.ToString();
+                                }
+                                if (transform.name == "TextProgress") {
+
+                                    UI.Text text = transform.GetComponent<UI.Text>();
+                                    text.text = badge.Current + " / " + badge.Goal;
+                                }
+                                if (transform.name == "ProgressBar") {
+
+                                    UI.Slider slider = transform.GetComponent<UI.Slider>();
+                                    slider.value = 0;
+                                    slider.value += (float)currently / (float)goal;
+                                }
+                                if (transform.name == "Rewards") {
+
+                                    UI.Text text = transform.GetComponent<UI.Text>();
+                                    foreach (Tuple<string, string> reward in badge.Rewards) {
+
+                                        int treshhold = int.Parse(reward.Item1);
+                                        if (int.Parse(badge.Current) < treshhold) {
+
+                                            text.text = reward.Item1 + ": " + reward.Item2;
+                                        }
+                                        else {
+
+                                            //unlock reward
+                                            if (reward.Item2 == "border_red") {
+
+                                                allowRed = true;
+                                                Transform button = _button_hud_CardBuilder_Color_Red.transform;
+                                                UI.Text buttonText = button.GetComponentInChildren<UI.Text>();
+                                                buttonText.text = "";
+                                            }
+                                            if (reward.Item2 == "border_green") {
+
+                                                allowGreen = true;
+                                                Transform button = _button_hud_CardBuilder_Color_Green.transform;
+                                                UI.Text buttonText = button.GetComponentInChildren<UI.Text>();
+                                                buttonText.text = "";
+                                            }
+                                            if (reward.Item2 == "border_gold") {
+
+                                                allowGold = true;
+                                                Transform button = _button_hud_CardBuilder_Color_Gold.transform;
+                                                UI.Text buttonText = button.GetComponentInChildren<UI.Text>();
+                                                buttonText.text = "";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            badge.GameObject = card.gameObject;
+                            repo.Save(badge);
+                        }
+
+                        if (int.Parse(badge.Current) >= int.Parse(badge.Goal)) {
+
+                            badge.Completed = true;
+                            Transform gridQuests = null;
+                            Transform gridArchievements = null;
+                            foreach (Transform transform in _hud_Profile.transform.GetComponentsInChildren<Transform>()) {
+
+                                if (transform.name == "GridQuests") {
+
+                                    gridQuests = transform;
+                                }
+                                if (transform.name == "GridArchievements") {
+
+                                    gridArchievements = transform;
+                                }
+                            }
+                            if (gridQuests != null && badge.GameObject.transform.parent == gridQuests) {
+
+                                if (gridArchievements != null) {
+
+                                    GameObject nGO = Instantiate(badge.GameObject, gridArchievements);
+                                    Destroy(badge.GameObject);
+                                    badge.GameObject = nGO;
+                                    repo.Save(badge);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -532,8 +735,8 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
 
     public void Button_ToggleHudCardBuilder_Click() {
 
-        _hud_Profile.gameObject.SetActive(!_hud_Profile.gameObject.activeSelf);
-        _button_Hud_Profile.gameObject.SetActive(!_button_Hud_Profile.gameObject.activeSelf);
+        _hud_CardBuilder.gameObject.SetActive(!_hud_CardBuilder.gameObject.activeSelf);
+        _button_hud_CardBuilder.gameObject.SetActive(!_button_hud_CardBuilder.gameObject.activeSelf);
     }
 
     public void Button_ToggleHudProfile_Click() {
@@ -542,9 +745,10 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
         _button_Hud_Profile.gameObject.SetActive(!_button_Hud_Profile.gameObject.activeSelf);
     }
 
+    private bool allowRed = false;
     public void Button_ChangeCardBorderColor_Red_Click() {
 
-        if (true) { //check if player has collected color red and can use it
+        if (allowRed) { //check if player has collected color red and can use it
 
             Transform hud = _hud_CardBuilder.transform;
             Transform bgBorder = hud.GetChild(0);
@@ -554,20 +758,27 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
             Transform card = gridCard.GetChild(0);
 
             Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
-            service_PaperCards.ChangeCardColor(card, service_PaperCards._colorRed);
-
             card.name = card.name.Replace("(", "");
             card.name = card.name.Replace(")", "");
             card.name = card.name.Replace("Clone", "");
             Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
             Debug.Log(card.name);
-            if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorRed);
+            if (collectionCard != null) {
+
+                PaperCard paper = repo.GetPapercardsById(card.name);
+                Color c = paper.TagList.Count > 0 ? service_PaperCards._colorRed : service_PaperCards._colorDarkRed;
+                service_PaperCards.ChangeCardColor(collectionCard, c);
+                service_PaperCards.ChangeCardColor(card, c);
+                paper.Color = c;
+                repo.Save(paper);
+            }
         }
     }
 
+    private bool allowGreen = false;
     public void Button_ChangeCardBorderColor_Green_Click() {
 
-        if (false) { //check if player has collected color red and can use it
+        if (allowGreen) { //check if player has collected color red and can use it
 
             Transform hud = _hud_CardBuilder.transform;
             Transform bgBorder = hud.GetChild(0);
@@ -577,20 +788,27 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
             Transform card = gridCard.GetChild(0);
 
             Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
-            service_PaperCards.ChangeCardColor(card, service_PaperCards._colorGreen);
-
             card.name = card.name.Replace("(", "");
             card.name = card.name.Replace(")", "");
             card.name = card.name.Replace("Clone", "");
             Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
             Debug.Log(card.name);
-            if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorGreen);
+            if (collectionCard != null) {
+
+                PaperCard paper = repo.GetPapercardsById(card.name);
+                Color c = paper.TagList.Count > 0 ? service_PaperCards._colorGreen : service_PaperCards._colorDarkGreen;
+                service_PaperCards.ChangeCardColor(collectionCard, c);
+                service_PaperCards.ChangeCardColor(card, c);
+                paper.Color = c;
+                repo.Save(paper);
+            }
         }
     }
 
+    private bool allowGold = false;
     public void Button_ChangeCardBorderColor_Gold_Click() {
 
-        if (false) { //check if player has collected color red and can use it
+        if (allowGold) { //check if player has collected color red and can use it
 
             Transform hud = _hud_CardBuilder.transform;
             Transform bgBorder = hud.GetChild(0);
@@ -608,12 +826,44 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
             Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
             Debug.Log(card.name);
             if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorGold);
+            PaperCard paper = repo.GetPapercardsById(card.name);
+            paper.Color = service_PaperCards._colorGold;
+            repo.Save(paper);
         }
     }
 
     public void Button_ChangeCardBorderColor_Blue_Click() {
 
-        if (true) { //check if player has collected color red and can use it
+        Transform hud = _hud_CardBuilder.transform;
+        Transform bgBorder = hud.GetChild(0);
+        Transform bg = bgBorder.GetChild(0);
+        Transform panel = bg.GetChild(1);
+        Transform gridCard = panel.GetChild(0);
+        Transform card = gridCard.GetChild(0);
+
+        Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
+        card.name = card.name.Replace("(", "");
+        card.name = card.name.Replace(")", "");
+        card.name = card.name.Replace("Clone", "");
+        Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
+        Debug.Log(card.name);
+        if (collectionCard != null) {
+
+            PaperCard paper = repo.GetPapercardsById(card.name);
+            Color c = paper.TagList.Count > 0 ? service_PaperCards._colorBlue : service_PaperCards._colorDarkBlue;
+            service_PaperCards.ChangeCardColor(collectionCard, c);
+            service_PaperCards.ChangeCardColor(card, c);
+            paper.Color = c;
+            repo.Save(paper);
+        }
+    }
+
+    public void Button_RemoveTagFromPaper_Click() {
+
+        GameObject currentSelectedGO = EventSystem.current.currentSelectedGameObject;
+        string id = currentSelectedGO.name;
+        TagPlanet tag = repo.GetTagPlanetsById(id);
+        if (tag != null) {
 
             Transform hud = _hud_CardBuilder.transform;
             Transform bgBorder = hud.GetChild(0);
@@ -623,14 +873,28 @@ public class Service_Hud : MonoBehaviour //updates the Information in every Hub 
             Transform card = gridCard.GetChild(0);
 
             Service_PaperCards service_PaperCards = _gameMaster.GetComponent<Service_PaperCards>();
-            service_PaperCards.ChangeCardColor(card, service_PaperCards._colorBlue);
-
             card.name = card.name.Replace("(", "");
             card.name = card.name.Replace(")", "");
             card.name = card.name.Replace("Clone", "");
             Transform collectionCard = service_PaperCards.GetCardByID(card.name, _hud_Collection.transform);
-            Debug.Log(card.name);
-            if (collectionCard != null) service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorBlue);
+            if (collectionCard != null) {
+
+                PaperCard paper = repo.GetPapercardsById(card.name);
+                paper.TagList.Remove(tag);
+                tag.TaggedPaperCards.Remove(paper);
+
+                if (paper.TagList.Count == 0) {
+
+                    paper.Color = service_PaperCards._colorDarkBlue;
+                    service_PaperCards.ChangeCardColor(card, service_PaperCards._colorDarkBlue);
+                    service_PaperCards.ChangeCardColor(collectionCard, service_PaperCards._colorDarkBlue);
+                }
+
+                repo.Save(paper);
+                repo.Save(tag);
+            }
+
+            Destroy(currentSelectedGO.transform.parent.parent.gameObject);
         }
     }
 }
